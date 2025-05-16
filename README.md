@@ -45,7 +45,7 @@ ATG/
 
 1. **Clone the Repository**
    ```sh
-   git clone <repository-url>
+   git clone https://github.com/yourusername/chrch-app.git
    ```
 2. **Open in Browser**
    - Double-click `Atg.html` or open with your favorite browser.
