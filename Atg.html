@@ -679,7 +679,11 @@
               const messageDiv = document.getElementById('newsletter-message');
               messageDiv.textContent = "⏳ Subscribing...";
               try {
-                const res = await fetch('http://localhost:5000/api/newsletter', {
+                const apiBase = window.location.hostname.includes('localhost')
+                  ? 'http://localhost:5000'
+                  : 'https://atgchapelmks-0dm8.onrender.com';
+
+                const res = await fetch(`${apiBase}/api/newsletter`, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ email })
