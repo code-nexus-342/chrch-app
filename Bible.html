@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KJV Bible</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            margin: 0;
+            background: #eaf2fb;
+            color: #1a237e;
+        }
+        #bible-container {
+            max-width: 900px;
+            margin: 2.5rem auto;
+            background: #fff;
+            padding: 2.5rem 2rem 2rem 2rem;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px #1976d21a;
+            border: 1.5px solid #1976d2;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #1976d2;
+            letter-spacing: 2px;
+            font-size: 2.2rem;
+        }
+        form {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2.2rem;
+        }
+        select, button {
+            padding: 0.6rem 1.2rem;
+            font-size: 1.1rem;
+            border-radius: 6px;
+            border: 1.5px solid #1976d2;
+            background: #f5faff;
+            color: #1a237e;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        select:focus, button:focus {
+            outline: none;
+            border: 2px solid #1976d2;
+            box-shadow: 0 0 0 2px #90caf9;
+        }
+        button {
+            background: #1976d2;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #1565c0;
+        }
+        #main-content {
+            display: flex;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+        }
+        #bible-text {
+            flex: 2 1 350px;
+            margin-top: 0.5rem;
+            min-width: 0;
+        }
+        #bible-text h2 {
+            text-align: center;
+            color: #1976d2;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+        .verse {
+            margin-bottom: 1.1em;
+            line-height: 1.85;
+            font-size: 1.13em;
+            background: #f5faff;
+            border-radius: 8px;
+            padding: 0.7em 1em 0.7em 2.5em;
+            position: relative;
+            transition: background 0.2s;
+        }
+        .verse:hover {
+            background: #e3f2fd;
+        }
+        .verse-num {
+            color: #1976d2;
+            font-size: 1em;
+            font-weight: bold;
+            position: absolute;
+            left: 1em;
+            top: 0.7em;
+            background: #fff;
+            border-radius: 50%;
+            width: 1.7em;
+            height: 1.7em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 4px #1976d220;
+        }
+        #notes-section {
+            flex: 1 1 250px;
+            margin-top: 0.5rem;
+            background: #f5faff;
+            border-radius: 10px;
+            padding: 1.2em 1em;
+            border: 1.5px solid #1976d2;
+            box-shadow: 0 2px 8px #1976d210;
+            min-width: 220px;
+        }
+        #notes-section label {
+            font-weight: bold;
+            color: #1976d2;
+            display: block;
+            margin-bottom: 0.7em;
+            font-size: 1.08em;
+        }
+        #notes-section textarea {
+            width: 100%;
+            min-height: 220px;
+            padding: 0.8em;
+            border-radius: 8px;
+            border: 1.5px solid #90caf9;
+            font-size: 1.07em;
+            font-family: inherit;
+            background: #fff;
+            resize: vertical;
+            color: #1a237e;
+            transition: border 0.2s;
+        }
+        #notes-section textarea:focus {
+            border: 2px solid #1976d2;
+            outline: none;
+        }
+        #notes-status {
+            font-size: 0.98em;
+            color: #1976d2;
+            margin-top: 0.7em;
+        }
+        @media (max-width: 900px) {
+            #main-content { flex-direction: column; gap: 1.5rem; }
+            #notes-section, #bible-text { margin-top: 1.5rem; }
+        }
+        /* Stylish Back Button */
+        .back-btn {
+            display: inline-block;
+            margin: 2.5rem auto 0 auto;
+            padding: 0.7em 2em;
+            background: #1976d2;
+            color: #fff;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 2px 8px #1976d220;
+            transition: background 0.2s, box-shadow 0.2s;
+            border: none;
+            text-align: center;
+        }
+        .back-btn:hover, .back-btn:focus {
+            background: #1565c0;
+            color: #fff;
+            box-shadow: 0 4px 16px #1976d240;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div id="bible-container">
+    <h1>KJV Bible Reader</h1>
+    <form id="bible-form">
+        <select id="book"></select>
+        <select id="chapter"></select>
+        <button type="submit">Read</button>
+    </form>
+    <div id="main-content">
+        <div id="bible-text"></div>
+        <div id="notes-section">
+            <label for="notes">Your Notes for this Chapter:</label>
+            <textarea id="notes" placeholder="Write your notes here..."></textarea>
+            <div id="notes-status"></div>
+        </div>
+    </div>
+</div>
+<script>
+const books = [
+    { name: "Genesis", chapters: 50 }, { name: "Exodus", chapters: 40 }, { name: "Leviticus", chapters: 27 },
+    { name: "Numbers", chapters: 36 }, { name: "Deuteronomy", chapters: 34 }, { name: "Joshua", chapters: 24 },
+    { name: "Judges", chapters: 21 }, { name: "Ruth", chapters: 4 }, { name: "1 Samuel", chapters: 31 },
+    { name: "2 Samuel", chapters: 24 }, { name: "1 Kings", chapters: 22 }, { name: "2 Kings", chapters: 25 },
+    { name: "1 Chronicles", chapters: 29 }, { name: "2 Chronicles", chapters: 36 }, { name: "Ezra", chapters: 10 },
+    { name: "Nehemiah", chapters: 13 }, { name: "Esther", chapters: 10 }, { name: "Job", chapters: 42 },
+    { name: "Psalms", chapters: 150 }, { name: "Proverbs", chapters: 31 }, { name: "Ecclesiastes", chapters: 12 },
+    { name: "Song of Solomon", chapters: 8 }, { name: "Isaiah", chapters: 66 }, { name: "Jeremiah", chapters: 52 },
+    { name: "Lamentations", chapters: 5 }, { name: "Ezekiel", chapters: 48 }, { name: "Daniel", chapters: 12 },
+    { name: "Hosea", chapters: 14 }, { name: "Joel", chapters: 3 }, { name: "Amos", chapters: 9 },
+    { name: "Obadiah", chapters: 1 }, { name: "Jonah", chapters: 4 }, { name: "Micah", chapters: 7 },
+    { name: "Nahum", chapters: 3 }, { name: "Habakkuk", chapters: 3 }, { name: "Zephaniah", chapters: 3 },
+    { name: "Haggai", chapters: 2 }, { name: "Zechariah", chapters: 14 }, { name: "Malachi", chapters: 4 },
+    { name: "Matthew", chapters: 28 }, { name: "Mark", chapters: 16 }, { name: "Luke", chapters: 24 },
+    { name: "John", chapters: 21 }, { name: "Acts", chapters: 28 }, { name: "Romans", chapters: 16 },
+    { name: "1 Corinthians", chapters: 16 }, { name: "2 Corinthians", chapters: 13 }, { name: "Galatians", chapters: 6 },
+    { name: "Ephesians", chapters: 6 }, { name: "Philippians", chapters: 4 }, { name: "Colossians", chapters: 4 },
+    { name: "1 Thessalonians", chapters: 5 }, { name: "2 Thessalonians", chapters: 3 }, { name: "1 Timothy", chapters: 6 },
+    { name: "2 Timothy", chapters: 4 }, { name: "Titus", chapters: 3 }, { name: "Philemon", chapters: 1 },
+    { name: "Hebrews", chapters: 13 }, { name: "James", chapters: 5 }, { name: "1 Peter", chapters: 5 },
+    { name: "2 Peter", chapters: 3 }, { name: "1 John", chapters: 5 }, { name: "2 John", chapters: 1 },
+    { name: "3 John", chapters: 1 }, { name: "Jude", chapters: 1 }, { name: "Revelation", chapters: 22 }
+];
+
+// Populate book dropdown
+const bookSelect = document.getElementById('book');
+books.forEach((b, i) => {
+    const opt = document.createElement('option');
+    opt.value = b.name;
+    opt.textContent = b.name;
+    bookSelect.appendChild(opt);
+});
+
+// Populate chapter dropdown based on selected book
+const chapterSelect = document.getElementById('chapter');
+function updateChapters() {
+    const book = books.find(b => b.name === bookSelect.value);
+    chapterSelect.innerHTML = '';
+    for (let i = 1; i <= book.chapters; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = i;
+        chapterSelect.appendChild(opt);
+    }
+}
+bookSelect.addEventListener('change', () => {
+    updateChapters();
+    loadNotes();
+});
+
+// Initial chapters for default book
+updateChapters();
+
+// Notes functionality
+const notesArea = document.getElementById('notes');
+const notesStatus = document.getElementById('notes-status');
+function getNotesKey() {
+    return `bible-notes-${bookSelect.value}-${chapterSelect.value}`;
+}
+function loadNotes() {
+    const key = getNotesKey();
+    notesArea.value = localStorage.getItem(key) || '';
+    notesStatus.textContent = '';
+}
+notesArea.addEventListener('input', () => {
+    const key = getNotesKey();
+    localStorage.setItem(key, notesArea.value);
+    notesStatus.textContent = 'Notes saved!';
+    setTimeout(() => { notesStatus.textContent = ''; }, 1200);
+});
+chapterSelect.addEventListener('change', loadNotes);
+
+// Bible fetch and display
+document.getElementById('bible-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const book = bookSelect.value;
+    const chapter = chapterSelect.value;
+    const url = `https://bible-api.com/${encodeURIComponent(book)}+${encodeURIComponent(chapter)}?translation=kjv`;
+
+    document.getElementById('bible-text').innerHTML = "Loading...";
+
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('bible-text').innerHTML = `<span style="color:red;">${data.error}</span>`;
+                return;
+            }
+            let html = `<h2>${data.reference}</h2>`;
+            data.verses.forEach(v => {
+                html += `<div class="verse"><span class="verse-num">${v.verse}</span>${v.text.trim()}</div>`;
+            });
+            document.getElementById('bible-text').innerHTML = html;
+        })
+        .catch(() => {
+            document.getElementById('bible-text').innerHTML = "<span style='color:red;'>Failed to load passage.</span>";
+        });
+    loadNotes();
+});
+
+// Load default passage and notes on page load
+document.getElementById('bible-form').dispatchEvent(new Event('submit'));
+</script>
+
+ <a href="Atg.html" class="back-btn">Back</a>
+</body>
+</html>
