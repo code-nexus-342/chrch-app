@@ -66,7 +66,7 @@ ATG/
 
 ## 🙌 Credits
 
-- Designed by **Mentee Ministers**
+- Designed by **Mobix**
 - Built with [Bootstrap](https://getbootstrap.com/), [Swiper](https://swiperjs.com/), [Glightbox](https://biati-digital.github.io/glightbox/), and more
 
 ---
