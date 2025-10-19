@@ -1,0 +1,303 @@
+/**
+ * CSS Styles for Futuristic Animations
+ * Contains all the necessary styles for the futuristic animation components
+ */
+
+/* Futuristic Animations Global Styles */
+.wave-particles {
+  overflow: hidden;
+}
+
+/* Floating Animation */
+.float {
+  transform: translateY(0px);
+  transition: transform 2s ease;
+}
+
+/* Glow Effects */
+.divine-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.divine-glow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, rgba(226,192,124,0.3) 0%, rgba(226,192,124,0) 70%);
+  filter: blur(15px);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.divine-glow:hover::before {
+  opacity: 1;
+}
+
+/* Ripple Effect */
+.ripple-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Text Reveal Animation */
+.reveal-text {
+  visibility: hidden;
+}
+
+.reveal-text.revealed {
+  visibility: visible;
+}
+
+/* Card Animation */
+.animated-card {
+  transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.animated-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.animated-card:hover::after {
+  opacity: 1;
+}
+
+/* Digital Glitch Effect */
+.glitch-text {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+
+.glitch-text::before {
+  color: #ff00ff;
+  z-index: -1;
+  animation: glitch-anim-1 2s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+  color: #00ffff;
+  z-index: -2;
+  animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+  0% { clip-path: inset(70% 0 10% 0); transform: translate(-2px, 2px); }
+  20% { clip-path: inset(29% 0 75% 0); transform: translate(2px, -2px); }
+  40% { clip-path: inset(83% 0 7% 0); transform: translate(1px, 2px); }
+  60% { clip-path: inset(23% 0 62% 0); transform: translate(-1px, -1px); }
+  80% { clip-path: inset(50% 0 31% 0); transform: translate(2px, 1px); }
+  100% { clip-path: inset(58% 0 23% 0); transform: translate(-2px, -2px); }
+}
+
+@keyframes glitch-anim-2 {
+  0% { clip-path: inset(21% 0 68% 0); transform: translate(2px, -2px); }
+  20% { clip-path: inset(58% 0 13% 0); transform: translate(-2px, 2px); }
+  40% { clip-path: inset(12% 0 78% 0); transform: translate(-1px, 1px); }
+  60% { clip-path: inset(34% 0 14% 0); transform: translate(1px, -1px); }
+  80% { clip-path: inset(61% 0 26% 0); transform: translate(2px, 2px); }
+  100% { clip-path: inset(19% 0 52% 0); transform: translate(-2px, -2px); }
+}
+
+/* Pulse Animation */
+.pulse-element {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Radial Progress Animation */
+.radial-progress {
+  position: relative;
+  display: inline-block;
+}
+
+.radial-progress-circle {
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: all 1s ease-in-out;
+}
+
+.radial-progress-circle-bg {
+  fill: none;
+  stroke: rgba(200, 200, 200, 0.2);
+}
+
+.radial-progress-circle-progress {
+  fill: none;
+  stroke: var(--divine-primary, #E2C07C);
+  stroke-linecap: round;
+  stroke-dasharray: 0 999;
+  transition: stroke-dasharray 1.5s ease-in-out;
+}
+
+/* Neon Text Effect */
+.neon-text {
+  color: #fff;
+  text-shadow: 
+    0 0 5px rgba(226,192,124,0.8),
+    0 0 10px rgba(226,192,124,0.8),
+    0 0 15px rgba(226,192,124,0.8),
+    0 0 20px rgba(226,192,124,0.5),
+    0 0 35px rgba(226,192,124,0.5),
+    0 0 40px rgba(226,192,124,0.4),
+    0 0 50px rgba(226,192,124,0.3);
+  animation: neon-pulse 2s infinite alternate;
+}
+
+@keyframes neon-pulse {
+  from {
+    text-shadow: 
+      0 0 5px rgba(226,192,124,0.8),
+      0 0 10px rgba(226,192,124,0.8),
+      0 0 15px rgba(226,192,124,0.8),
+      0 0 20px rgba(226,192,124,0.5),
+      0 0 35px rgba(226,192,124,0.5),
+      0 0 40px rgba(226,192,124,0.4),
+      0 0 50px rgba(226,192,124,0.3);
+  }
+  to {
+    text-shadow: 
+      0 0 5px rgba(226,192,124,0.8),
+      0 0 10px rgba(226,192,124,0.8),
+      0 0 15px rgba(226,192,124,0.8),
+      0 0 20px rgba(226,192,124,0.6),
+      0 0 35px rgba(226,192,124,0.6),
+      0 0 40px rgba(226,192,124,0.5),
+      0 0 50px rgba(226,192,124,0.4),
+      0 0 75px rgba(226,192,124,0.3);
+  }
+}
+
+/* Liquid Button Effect */
+.liquid-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.liquid-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 40%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s ease;
+}
+
+.liquid-button:hover::after {
+  transform: translate(-50%, -50%) scale(1);
+  animation: liquid-ripple 2s infinite;
+}
+
+@keyframes liquid-ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Digital Countdown Animation */
+.digital-countdown {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.1em;
+}
+
+.digital-countdown .digit {
+  display: inline-block;
+  padding: 0 0.2em;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.digital-countdown .digit::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--divine-primary, #E2C07C);
+  animation: countdown-pulse 1s infinite;
+}
+
+@keyframes countdown-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Floating Icons Animation */
+.floating-icons {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.floating-icon {
+  position: absolute;
+  opacity: 0.05;
+  animation: float-icons 15s infinite linear;
+}
+
+@keyframes float-icons {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.05;
+  }
+  25% {
+    opacity: 0.1;
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 0.05;
+  }
+  75% {
+    opacity: 0.1;
+  }
+  100% {
+    transform: translateY(0) rotate(360deg);
+    opacity: 0.05;
+  }
+}

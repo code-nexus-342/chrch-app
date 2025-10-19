@@ -1,0 +1,113 @@
+/* 
+ * Adaptive Navigation System
+ * ATG Chapel - Divine Digital Sanctuary
+ * October 2025
+ */
+
+/* Base styling for adaptive navbar */
+.adaptive-nav {
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: var(--shadow-md);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+[data-theme="dark"] .adaptive-nav {
+    background-color: rgba(26, 31, 46, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Link styling for adaptive navbar */
+.adaptive-nav .navmenu ul li a {
+    color: var(--divine-primary);
+    font-weight: 500;
+}
+
+[data-theme="dark"] .adaptive-nav .navmenu ul li a {
+    color: var(--divine-light);
+}
+
+/* Active link in adaptive navbar */
+.adaptive-nav .navmenu ul li a.active,
+.adaptive-nav .navmenu ul li a:hover {
+    color: var(--divine-secondary);
+}
+
+/* Mobile toggle for adaptive navbar */
+.adaptive-nav .mobile-nav-toggle {
+    color: var(--divine-primary);
+}
+
+[data-theme="dark"] .adaptive-nav .mobile-nav-toggle {
+    color: var(--divine-light);
+}
+
+/* Glass navbar styling (original style) */
+.glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .glass {
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Scrolled navbar styling - adds more contrast when scrolling */
+.header.scrolled.glass {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .header.scrolled.glass {
+    background: rgba(26, 31, 46, 0.8);
+}
+
+.header.scrolled.adaptive-nav {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: var(--shadow-md);
+}
+
+[data-theme="dark"] .header.scrolled.adaptive-nav {
+    background: rgba(26, 31, 46, 0.98);
+}
+
+/* Page-specific navbar adaptations */
+.bible-page .header,
+.mission-page .header,
+.events-page .header,
+.community-page .header {
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: var(--shadow-md);
+}
+
+[data-theme="dark"] .bible-page .header,
+[data-theme="dark"] .mission-page .header,
+[data-theme="dark"] .events-page .header,
+[data-theme="dark"] .community-page .header {
+    background-color: rgba(26, 31, 46, 0.95);
+}
+
+/* Add this class to pages with dark hero sections */
+.dark-hero .header:not(.scrolled) {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+[data-theme="dark"] .dark-hero .header:not(.scrolled) {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* Add this class to pages with light hero sections */
+.light-hero .header:not(.scrolled) {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+[data-theme="dark"] .light-hero .header:not(.scrolled) {
+    background: rgba(26, 31, 46, 0.85);
+}

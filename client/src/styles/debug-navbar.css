@@ -1,0 +1,110 @@
+/* 
+ * TEMPORARY DEBUG STYLES FOR MOBILE NAVBAR
+ * Add this to App.css to make navbar SUPER visible for debugging
+ * Remove once you confirm navbar is working
+ */
+
+/* Make header EXTREMELY visible for debugging */
+@media (max-width: 1199px) {
+  .header {
+    background-color: red !important;  /* Bright red so you can't miss it */
+    min-height: 60px !important;
+    border: 5px solid yellow !important;  /* Yellow border for visibility */
+  }
+
+  .header .logo h1 {
+    color: white !important;
+    background-color: blue !important;  /* Blue background for logo */
+    padding: 5px !important;
+  }
+
+  .mobile-nav-toggle {
+    background-color: green !important;  /* Green background for hamburger */
+    color: white !important;
+    padding: 10px !important;
+    border: 3px solid white !important;
+    border-radius: 5px !important;
+  }
+}
+
+/* Debug: Show z-index values */
+.header::before {
+  content: "HEADER - Z: 9999999";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: yellow;
+  color: black;
+  padding: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 10000000;
+}
+
+.mobile-nav-toggle::after {
+  content: "CLICK ME";
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: lime;
+  color: black;
+  padding: 3px 6px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+/* Highlight body padding */
+body::before {
+  content: "BODY PADDING AREA (should prevent content overlap)";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: rgba(255, 0, 255, 0.3);  /* Magenta overlay */
+  z-index: 9999998;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  text-shadow: 1px 1px 2px black;
+}
+
+/* Show all z-index layers */
+#root::before {
+  content: "ROOT - Z: 1";
+  position: fixed;
+  bottom: 150px;
+  right: 10px;
+  background: orange;
+  color: black;
+  padding: 5px;
+  font-size: 10px;
+  z-index: 2;
+}
+
+main::before {
+  content: "MAIN - Z: 1";
+  position: fixed;
+  bottom: 120px;
+  right: 10px;
+  background: pink;
+  color: black;
+  padding: 5px;
+  font-size: 10px;
+  z-index: 2;
+}
+
+section::before {
+  content: "SECTION - Z: 1";
+  position: fixed;
+  bottom: 90px;
+  right: 10px;
+  background: lightblue;
+  color: black;
+  padding: 5px;
+  font-size: 10px;
+  z-index: 2;
+}

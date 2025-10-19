@@ -1,0 +1,243 @@
+/* Spiritual Scroll Navigation Styles */
+
+/* Light ray animation */
+@keyframes lightRay {
+  0% {
+    opacity: 0.1;
+    transform: translateY(0) rotate(45deg);
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.1;
+    transform: translateY(100vh) rotate(45deg);
+  }
+}
+
+.light-ray {
+  position: absolute;
+  width: 2px;
+  height: 100px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(255, 215, 0, 0.5),
+    transparent
+  );
+  animation: lightRay 8s linear infinite;
+}
+
+.light-ray:nth-child(1) {
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.light-ray:nth-child(2) {
+  left: 30%;
+  animation-delay: 2s;
+}
+
+.light-ray:nth-child(3) {
+  left: 50%;
+  animation-delay: 4s;
+}
+
+.light-ray:nth-child(4) {
+  left: 70%;
+  animation-delay: 6s;
+}
+
+.light-ray:nth-child(5) {
+  left: 90%;
+  animation-delay: 1s;
+}
+
+/* Cloud animation */
+@keyframes cloudFloat {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100vw);
+  }
+}
+
+.cloud {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 100px;
+  animation: cloudFloat linear infinite;
+  filter: blur(5px);
+}
+
+.cloud-1 {
+  width: 200px;
+  height: 60px;
+  top: 10%;
+  animation-duration: 60s;
+  animation-delay: 0s;
+}
+
+.cloud-2 {
+  width: 150px;
+  height: 45px;
+  top: 30%;
+  animation-duration: 80s;
+  animation-delay: 10s;
+}
+
+.cloud-3 {
+  width: 250px;
+  height: 75px;
+  top: 50%;
+  animation-duration: 70s;
+  animation-delay: 20s;
+}
+
+/* Gentle glow effect */
+@keyframes gentleGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(107, 155, 209, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(107, 155, 209, 0.6);
+  }
+}
+
+.spiritual-glow {
+  animation: gentleGlow 3s ease-in-out infinite;
+}
+
+/* Peaceful pulse */
+@keyframes peacefulPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+.peaceful-pulse {
+  animation: peacefulPulse 4s ease-in-out infinite;
+}
+
+/* Smooth scroll indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.scroll-indicator:hover {
+  opacity: 1;
+}
+
+/* Section transitions */
+.scroll-section {
+  transition: all 0.5s ease-out;
+}
+
+/* Accessibility improvements */
+.floating-hub button:focus,
+.floating-hub a:focus {
+  outline: 3px solid #d4af37;
+  outline-offset: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .floating-hub {
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .floating-hub .menu-item {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Prayer modal compatibility */
+.prayer-request-btn {
+  cursor: pointer;
+}
+
+/* Dark theme adjustments */
+[data-theme='dark'] .scroll-section {
+  background: linear-gradient(to bottom, #1a202c, #2d3748);
+}
+
+[data-theme='dark'] .bg-white {
+  background-color: #2d3748 !important;
+  color: #f7fafc;
+}
+
+[data-theme='dark'] .text-gray-800 {
+  color: #f7fafc !important;
+}
+
+[data-theme='dark'] .text-gray-700 {
+  color: #e2e8f0 !important;
+}
+
+[data-theme='dark'] .text-gray-600 {
+  color: #cbd5e0 !important;
+}
+
+/* Spiritual gradient text */
+.spiritual-gradient-text {
+  background: linear-gradient(
+    135deg,
+    var(--spiritual-blue),
+    var(--spiritual-purple),
+    var(--spiritual-gold)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Soft shadow for depth */
+.spiritual-shadow {
+  box-shadow: 0 10px 40px rgba(107, 155, 209, 0.2);
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--spiritual-gold);
+  outline-offset: 4px;
+}
+
+/* Smooth transitions for all interactive elements */
+button,
+a {
+  transition: all 0.3s ease;
+}
+
+/* Loading state */
+.loading-spinner {
+  border: 3px solid rgba(107, 155, 209, 0.2);
+  border-top: 3px solid var(--spiritual-blue);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

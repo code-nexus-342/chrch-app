@@ -1,0 +1,246 @@
+/* Mobile Navigation Visibility Fixes */
+
+/* CRITICAL: Force header above ALL content including preloader */
+.header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 9999999 !important;
+  width: 100% !important;
+  pointer-events: auto !important;
+}
+
+/* Critical mobile navigation fixes for screens below 1200px */
+@media (max-width: 1199px) {
+  /* Force header to be visible and have proper background */
+  .header {
+    background-color: rgba(0, 0, 0, 0.95) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  /* Ensure logo is always visible */
+  .header .logo h1,
+  .header .logo {
+    color: #ffffff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 10000000 !important;
+  }
+
+  /* Ensure container is visible */
+  .header .container-fluid,
+  .header .container-xl {
+    position: relative !important;
+    z-index: 10000000 !important;
+  }
+
+  /* Make mobile nav toggle button ALWAYS visible */
+  .mobile-nav-toggle {
+    display: block !important;
+    position: relative !important;
+    z-index: 10000001 !important;
+    color: #ffffff !important;
+    font-size: 32px !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 8px !important;
+    margin-right: 0 !important;
+    pointer-events: auto !important;
+  }
+
+  /* Ensure it's visible in both states */
+  .navmenu .mobile-nav-toggle {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 10000001 !important;
+    pointer-events: auto !important;
+  }
+
+  /* Hide desktop navigation menu by default on mobile */
+  .navmenu ul {
+    display: none !important;
+  }
+
+  /* When mobile nav is active */
+  .mobile-nav-active {
+    overflow: hidden !important;
+  }
+
+  .mobile-nav-active .mobile-nav-toggle {
+    color: #ffffff !important;
+    position: fixed !important;
+    top: 15px !important;
+    right: 15px !important;
+    z-index: 10000003 !important;
+    font-size: 36px !important;
+    pointer-events: auto !important;
+  }
+
+  .mobile-nav-active .navmenu {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(0, 0, 0, 0.98) !important;
+    backdrop-filter: blur(20px) !important;
+    z-index: 10000002 !important;
+    overflow-y: auto !important;
+    display: block !important;
+    pointer-events: auto !important;
+  }
+
+  .mobile-nav-active .navmenu ul {
+    display: block !important;
+    position: absolute;
+    inset: 60px 20px 20px 20px;
+    padding: 20px 0;
+    margin: 0;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    overflow-y: auto;
+    list-style: none;
+  }
+
+  /* Fallback: if the class is applied directly to navmenu */
+  .navmenu.mobile-nav-active {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(0, 0, 0, 0.98) !important;
+    backdrop-filter: blur(20px) !important;
+    z-index: 10000002 !important;
+    overflow-y: auto !important;
+    display: block !important;
+    pointer-events: auto !important;
+  }
+
+  .navmenu.mobile-nav-active ul {
+    display: block !important;
+    position: absolute !important;
+    inset: 60px 20px 20px 20px !important;
+    padding: 20px 0 !important;
+    margin: 0 !important;
+    border-radius: 10px !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(10px) !important;
+    overflow-y: auto !important;
+    list-style: none !important;
+  }
+
+  .navmenu.mobile-nav-active .mobile-nav-toggle {
+    color: #ffffff !important;
+    position: fixed !important;
+    top: 15px !important;
+    right: 15px !important;
+    z-index: 10000003 !important;
+    font-size: 36px !important;
+    pointer-events: auto !important;
+  }
+
+  /* Mobile nav links styling */
+  .mobile-nav-active .navmenu a {
+    color: #ffffff !important;
+    padding: 15px 25px !important;
+    display: flex !important;
+    align-items: center !important;
+    font-size: 16px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .mobile-nav-active .navmenu a:hover,
+  .mobile-nav-active .navmenu .active {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #6366f1 !important;
+  }
+
+  /* Dropdown styling for mobile */
+  .mobile-nav-active .navmenu .dropdown ul {
+    position: static !important;
+    display: none !important;
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    padding: 10px 0 !important;
+    margin: 5px 0 !important;
+    border-radius: 8px;
+  }
+
+  .mobile-nav-active .navmenu .dropdown-active ul {
+    display: block !important;
+  }
+
+  /* Make dropdown toggle icons visible */
+  .mobile-nav-active .navmenu .dropdown > a .toggle-dropdown {
+    color: #ffffff !important;
+    font-size: 14px !important;
+  }
+}
+
+/* Extra small devices (phones) */
+@media (max-width: 576px) {
+  .header {
+    padding: 10px 0 !important;
+  }
+
+  .header .logo h1 {
+    font-size: 24px !important;
+  }
+
+  .mobile-nav-toggle {
+    font-size: 28px !important;
+  }
+
+  .mobile-nav-active .navmenu ul {
+    inset: 50px 15px 15px 15px !important;
+  }
+}
+
+/* Ensure header is always on top - CRITICAL FIX */
+.header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 9999999 !important;
+  width: 100% !important;
+  pointer-events: auto !important;
+}
+
+/* Desktop view - ensure header is still on top */
+@media (min-width: 1200px) {
+  .header {
+    z-index: 9999999 !important;
+  }
+}
+
+/* Ensure all page content is below the header */
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+main {
+  position: relative;
+  z-index: 1;
+}
+
+section {
+  position: relative;
+  z-index: 1;
+}
+
+/* Add padding to body to prevent content from hiding under fixed header */
+body {
+  padding-top: 80px !important;
+}
+
+@media (max-width: 576px) {
+  body {
+    padding-top: 70px !important;
+  }
+}

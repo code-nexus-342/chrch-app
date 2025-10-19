@@ -1,0 +1,421 @@
+/* Divine Digital Sanctuary Theme
+ * ATG Chapel Machakos - 2025
+ * A modern, immersive design system for spiritual experience
+ */
+
+/* Base Theme Colors */
+:root {
+  /* Core Palette */
+  --divine-primary: #3A2482;       /* Deep indigo - representing depth of faith and spiritual wisdom */
+  --divine-secondary: #E2C07C;     /* Soft gold - symbolizing divine light and warmth */
+  --divine-accent-1: #B4A7D6;      /* Gentle lavender - evoking peace and tranquility */
+  --divine-accent-2: #7EA9C8;      /* Serene blue - representing living waters */
+  --divine-light: #F5F5F5;         /* Warm white - divine light */
+  --divine-dark: #333333;          /* Rich charcoal - grounding element */
+  
+  /* Gradients */
+  --divine-gradient-dark: linear-gradient(135deg, #0B0F19 0%, #2A3B57 100%);  /* Night sky to dawn */
+  --divine-gradient-light: linear-gradient(135deg, #F5F5F5 0%, #E8E1D5 100%); /* Divine light */
+  --divine-gradient-gold: linear-gradient(135deg, #E2C07C 0%, #F7E6C4 100%);  /* Divine glory */
+  
+  /* Functional Colors */
+  --color-body-bg: var(--divine-light);
+  --color-body-text: var(--divine-dark);
+  --color-heading: var(--divine-primary);
+  --color-link: var(--divine-primary);
+  --color-link-hover: color-mix(in srgb, var(--divine-primary), transparent 20%);
+  
+  /* Utility Colors */
+  --color-success: #5CB85C;
+  --color-info: var(--divine-accent-2);
+  --color-warning: #F0AD4E;
+  --color-danger: #D9534F;
+  
+  /* Surface Colors */
+  --color-surface-light: #FFFFFF;
+  --color-surface-neutral: #F7F7F8;
+  --color-surface-dark: #0B0F19;
+  
+  /* Shadows & Effects */
+  --shadow-sm: 0 2px 4px rgba(11, 15, 25, 0.1);
+  --shadow-md: 0 4px 6px rgba(11, 15, 25, 0.1), 0 1px 3px rgba(11, 15, 25, 0.08);
+  --shadow-lg: 0 10px 15px rgba(11, 15, 25, 0.1), 0 4px 6px rgba(11, 15, 25, 0.05);
+  --shadow-divine: 0 0 20px rgba(226, 192, 124, 0.3);
+  
+  /* Dark mode color tokens (will be applied via [data-theme="dark"]) */
+  --dark-color-body-bg: #0B0F19;
+  --dark-color-body-text: #E8E1D5;
+  --dark-color-heading: #F5F5F5;
+  --dark-color-link: var(--divine-accent-1);
+  --dark-color-link-hover: color-mix(in srgb, var(--divine-accent-1), transparent 20%);
+  --dark-color-surface-light: #1A1F2E;
+  --dark-color-surface-neutral: #141824;
+}
+
+/* Dark Mode Overrides */
+[data-theme="dark"] {
+  --color-body-bg: var(--dark-color-body-bg);
+  --color-body-text: var(--dark-color-body-text);
+  --color-heading: var(--dark-color-heading);
+  --color-link: var(--dark-color-link);
+  --color-link-hover: var(--dark-color-link-hover);
+  --color-surface-light: var(--dark-color-surface-light);
+  --color-surface-neutral: var(--dark-color-surface-neutral);
+}
+
+/* Typography */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap');
+
+:root {
+  /* Typography Scale */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: 2.25rem;   /* 36px */
+  --text-5xl: 3rem;      /* 48px */
+  --text-6xl: 4rem;      /* 64px */
+  
+  /* Font Families */
+  --font-heading: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Work Sans', system-ui, -apple-system, sans-serif;
+  --font-scripture: 'Playfair Display', Georgia, serif;
+  
+  /* Line Heights */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+  
+  /* Letter Spacing */
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+}
+
+/* Base Typography Styles */
+body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: var(--leading-normal);
+  font-size: var(--text-base);
+  color: var(--color-body-text);
+  background-color: var(--color-body-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-heading);
+  margin-bottom: 0.5em;
+}
+
+h1 { font-size: var(--text-5xl); font-weight: 700; }
+h2 { font-size: var(--text-4xl); }
+h3 { font-size: var(--text-3xl); }
+h4 { font-size: var(--text-2xl); }
+h5 { font-size: var(--text-xl); }
+h6 { font-size: var(--text-lg); }
+
+p {
+  margin-bottom: 1.5rem;
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+  color: var(--color-link-hover);
+}
+
+/* Scripture Text Styling */
+.scripture {
+  font-family: var(--font-scripture);
+  font-style: italic;
+  line-height: var(--leading-relaxed);
+  color: var(--divine-primary);
+  font-weight: 500;
+}
+
+.scripture-reference {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.875em;
+  color: var(--divine-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  margin-top: 0.5rem;
+}
+
+[data-theme="dark"] .scripture {
+  color: var(--divine-accent-1);
+}
+
+[data-theme="dark"] .scripture-reference {
+  color: var(--divine-secondary);
+}
+
+/* UI Elements */
+
+/* Divine Button */
+.btn-divine {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.75rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--text-base);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--divine-light);
+  background: var(--divine-primary);
+  border: none;
+  border-radius: 50px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn-divine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--divine-gradient-gold);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.btn-divine:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md), 0 0 15px rgba(226, 192, 124, 0.4);
+}
+
+.btn-divine:hover::after {
+  opacity: 0.15;
+}
+
+.btn-divine:active {
+  transform: translateY(1px);
+}
+
+/* Divine Card */
+.divine-card {
+  background: var(--color-surface-light);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  padding: 2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.divine-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 0;
+  background: var(--divine-gradient-gold);
+  transition: height 0.3s ease;
+}
+
+.divine-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.divine-card:hover::before {
+  height: 100%;
+}
+
+/* Glass Card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2rem;
+}
+
+[data-theme="dark"] .glass-card {
+  background: rgba(11, 15, 25, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Holy Light Effects */
+
+/* Creates a subtle light beam on top of an element */
+.divine-light {
+  position: relative;
+  overflow: hidden;
+}
+
+.divine-light::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 70%);
+  opacity: 0;
+  transform: rotate(-45deg);
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.divine-light:hover::before {
+  opacity: 1;
+  animation: light-beam 2s infinite alternate;
+}
+
+@keyframes light-beam {
+  0% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
+/* Adaptive Sections */
+.divine-section {
+  padding: 5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.divine-section--dark {
+  background: var(--divine-gradient-dark);
+  color: var(--divine-light);
+}
+
+.divine-section--light {
+  background: var(--divine-gradient-light);
+  color: var(--divine-dark);
+}
+
+/* Hero Section Enhancement */
+.divine-hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+}
+
+.divine-hero__content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.divine-hero__title {
+  font-size: var(--text-6xl);
+  margin-bottom: 1rem;
+  animation: fade-in 1s ease-out;
+}
+
+.divine-hero__subtitle {
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  margin-bottom: 2rem;
+  animation: fade-in 1s ease-out 0.3s forwards;
+  opacity: 0;
+}
+
+.divine-hero__cta {
+  animation: fade-in 1s ease-out 0.6s forwards;
+  opacity: 0;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scripture animation */
+.animated-scripture {
+  position: relative;
+  display: inline-block;
+}
+
+.animated-scripture .letter {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Particles container */
+.particles-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Utility Classes */
+
+.divine-shadow {
+  box-shadow: var(--shadow-divine);
+}
+
+.divine-border {
+  border-left: 4px solid var(--divine-secondary);
+  padding-left: 1.5rem;
+}
+
+.divine-gradient-text {
+  background: var(--divine-gradient-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.divine-glow {
+  text-shadow: 0 0 5px rgba(226, 192, 124, 0.7);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  h1, .divine-hero__title { font-size: var(--text-4xl); }
+  h2 { font-size: var(--text-3xl); }
+  h3 { font-size: var(--text-2xl); }
+  
+  .divine-section {
+    padding: 3rem 0;
+  }
+}
