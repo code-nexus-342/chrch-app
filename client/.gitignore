@@ -22,10 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment files (keep .env.example and .env.production for deployment)
 .env
 .env.local
 .env.*.local
-.env.production
 .env.test
 .env.staging
 .env.development
@@ -33,7 +34,8 @@ dist-ssr
 .env.test.local
 .env.staging.local
 .env.development.local
-.env.example
+
+# Build and cache
 .cache
 .next
 .out
@@ -41,4 +43,4 @@ dist-ssr
 coverage
 .cache-loader
 .nuxt
-.firebase.
+.firebase

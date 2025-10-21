@@ -13,7 +13,6 @@ import Founders from './pages/Founders';
 import Services from './pages/Services';
 import './App.css';
 import './styles/custom-pages.css';
-import './styles/mobile-nav-fix.css';
 
 function App() {
   return (

@@ -1,11 +1,27 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
+const cron = require('node-cron');
+const path = require('path');
 require('dotenv').config();
+
+// Import database utilities
+const { initDatabase, deleteExpiredEvents } = require('./db/utils');
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+
+// CORS configuration for production
+const corsOptions = {
+  origin: process.env.CLIENT_URL || '*',
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+
+// Serve static files from client's public assets directory
+const clientAssetsPath = path.join(__dirname, '../client/public/assets');
+app.use('/assets', express.static(clientAssetsPath));
 
 // Create email transporter
 const createTransporter = () => {
@@ -173,10 +189,52 @@ app.post('/api/contact', async (req, res) => {
   }
 });
 
+// Import events routes
+const eventsRoutes = require('./routes/events');
+app.use('/api/events', eventsRoutes);
+
+// Import upload routes
+const uploadRoutes = require('./routes/upload');
+app.use('/api/upload', uploadRoutes);
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'ATG Chapel API is running' });
 });
 
+// Initialize database and start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+async function startServer() {
+  try {
+    // Initialize database schema
+    await initDatabase();
+    
+    // Schedule automatic cleanup of expired events (runs every hour)
+    cron.schedule('0 * * * *', async () => {
+      console.log('⏰ Running scheduled cleanup of expired events...');
+      try {
+        const deletedCount = await deleteExpiredEvents();
+        if (deletedCount > 0) {
+          console.log(`✅ Cleaned up ${deletedCount} expired event(s)`);
+        }
+      } catch (error) {
+        console.error('❌ Scheduled cleanup failed:', error);
+      }
+    });
+    
+    // Also run cleanup on startup
+    await deleteExpiredEvents();
+    
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`📊 Database connected and initialized`);
+      console.log(`⏰ Scheduled cleanup job active (runs hourly)`);
+    });
+  } catch (error) {
+    console.error('❌ Failed to start server:', error);
+    process.exit(1);
+  }
+}
+
+startServer();

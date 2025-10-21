@@ -1,8 +1,15 @@
 node_modules/
 
+# Environment files (keep .env.example for reference)
 .env
 .env.local
 .env.*.local
 .env.production
 .env.test
-.env.example    
+
+# Uploaded files
+uploads/
+*.jpg
+*.png
+*.gif
+*.webp    

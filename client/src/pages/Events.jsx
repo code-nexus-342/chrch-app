@@ -5,78 +5,34 @@ import AOS from 'aos';
 import Swiper from 'swiper';
 import 'swiper/css';
 import 'swiper/css/pagination';
-
-// Events data
-const eventsData = [
-  {
-    id: 1,
-    title: 'Mutituni Market Crusade',
-    type: 'Crusade',
-    date: '07-09 March, 2025',
-    venue: 'Mutituni Market',
-    host: 'ATG Chapel Mks',
-    contact: '0714888066',
-    images: [
-      '/assets/img/Events/Crusade.jpg',
-      '/assets/img/Events/Confrence.jpg',
-      '/assets/img/Events/Fellowship.jpg'
-    ],
-    description: 'Join us for a powerful three-day crusade at Mutituni Market. Experience transformative worship, anointed preaching, and miraculous testimonies as we bring the gospel to our community.',
-    featured: true,
-    status: 'upcoming'
-  },
-  {
-    id: 2,
-    title: 'Youth Conference 2025',
-    type: 'Conference',
-    date: '15 March, 2025',
-    venue: 'ATG Chapel Hall',
-    host: 'ATG Youth Ministry',
-    contact: '0714888066',
-    images: [
-      '/assets/img/Events/Youth 2.jpg',
-      '/assets/img/Events/Youth 1.jpg'
-    ],
-    description: 'A dynamic youth conference featuring inspiring speakers, worship sessions, and interactive workshops designed to empower the next generation of faith leaders.',
-    featured: true,
-    status: 'upcoming'
-  },
-  {
-    id: 3,
-    title: 'Monthly Fellowship',
-    type: 'Fellowship',
-    date: 'Every Last Saturday',
-    venue: 'Various Locations',
-    host: 'ATG Chapel Mks',
-    contact: '0714888066',
-    images: [
-      '/assets/img/Events/Fellowship.jpg'
-    ],
-    description: 'Monthly fellowship gatherings bringing together believers for worship, teaching, and community building. A time to strengthen bonds and grow together in faith.',
-    featured: false,
-    status: 'recurring'
-  },
-  {
-    id: 4,
-    title: 'Easter Celebration',
-    type: 'Special Service',
-    date: '20 April, 2025',
-    venue: 'ATG Chapel Main Sanctuary',
-    host: 'ATG Chapel Mks',
-    contact: '0714888066',
-    images: [
-      // '/assets/img/hero-carousel/hero-carousel-1.jpg'
-    ],
-    description: 'Celebrate the resurrection of Jesus Christ with us! Join our Easter service featuring special music, drama presentations, and a powerful message of hope.',
-    featured: true,
-    status: 'upcoming'
-  }
-];
+import apiService from '../services/api';
 
 function Events() {
   const [selectedFilter, setSelectedFilter] = useState('all');
-  const [filteredEvents, setFilteredEvents] = useState(eventsData);
+  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [allEvents, setAllEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  // Helper function to get full image URL
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return '/assets/img/hero-carousel/hero-carousel-1.jpg';
+    
+    // If it's already a full URL, return as is
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return imagePath;
+    }
+    
+    // If it's a relative path, prepend the API base URL
+    const API_BASE_URL = import.meta.env.VITE_API_URL || 
+      (window.location.hostname.includes('localhost') 
+        ? 'http://localhost:5000' 
+        : 'https://atgchapelmks-0dm8.onrender.com');
+    
+    return `${API_BASE_URL}${imagePath}`;
+  };
+
+  // Initialize AOS
   useEffect(() => {
     AOS.init({
       duration: 800,
@@ -85,13 +41,34 @@ function Events() {
     });
   }, []);
 
+  // Fetch events from API
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const events = await apiService.getEvents();
+        setAllEvents(events);
+        setFilteredEvents(events);
+      } catch (err) {
+        console.error('Error fetching events:', err);
+        setError(err.message || 'Failed to load events');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  // Filter events based on selected filter
   useEffect(() => {
     if (selectedFilter === 'all') {
-      setFilteredEvents(eventsData);
+      setFilteredEvents(allEvents);
     } else {
-      setFilteredEvents(eventsData.filter(event => event.type.toLowerCase() === selectedFilter));
+      setFilteredEvents(allEvents.filter(event => event.type.toLowerCase() === selectedFilter));
     }
-  }, [selectedFilter]);
+  }, [selectedFilter, allEvents]);
 
   const filters = [
     { label: 'All Events', value: 'all' },
@@ -443,8 +420,33 @@ function Events() {
             ))}
           </motion.div>
 
+          {/* Loading State */}
+          {loading && (
+            <div className="no-events">
+              <i className="bi bi-hourglass-split"></i>
+              <h3>Loading events...</h3>
+              <p>Please wait while we fetch the latest events</p>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && !loading && (
+            <div className="no-events">
+              <i className="bi bi-exclamation-circle"></i>
+              <h3>Unable to load events</h3>
+              <p>{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="btn-primary"
+                style={{ marginTop: '1rem', maxWidth: '200px' }}
+              >
+                Try Again
+              </button>
+            </div>
+          )}
+
           {/* Events Grid */}
-          {filteredEvents.length > 0 ? (
+          {!loading && !error && filteredEvents.length > 0 && (
             <div className="events-grid">
               {filteredEvents.map((event, index) => (
                 <motion.div
@@ -457,7 +459,7 @@ function Events() {
                   data-aos-delay={index * 100}
                 >
                   <img 
-                    src={event.images[0]} 
+                    src={getImageUrl(event.images?.[0])} 
                     alt={event.title} 
                     className="event-image"
                     onError={(e) => {
@@ -498,7 +500,10 @@ function Events() {
                 </motion.div>
               ))}
             </div>
-          ) : (
+          )}
+
+          {/* No Events State */}
+          {!loading && !error && filteredEvents.length === 0 && (
             <div className="no-events">
               <i className="bi bi-calendar-x"></i>
               <h3>No events found</h3>

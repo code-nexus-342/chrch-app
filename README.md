@@ -1,129 +1,433 @@
-# ATG Chapel Machakos Website
+# 🕊️ ATG Chapel Machakos - Full-Stack Church Application
 
-Welcome to the website for ATG Chapel Machakos. This repository contains a static frontend (HTML/CSS/JS) and a small Node.js server used for newsletter subscriptions.
+> **Where Divinity Meets Humanity**
 
-Where Divinity Meets Humanity.
+Modern, full-stack church management application built with React, Node.js, and PostgreSQL. Features event management, newsletter subscriptions, prayer requests, contact forms, and a beautiful spiritual UI.
 
-## Features
+---
 
-- Home with hero carousel, featured sections, and contact info (`index.html`)
-- About, Founders, Services, Events, and Mission pages
-- Community and Programs microsites with custom carousels
-- Media/Testimonials slider powered by Swiper
-- Bible Notebook page that fetches passages from bible-api.com and saves notes locally (`Bible.html`)
-- Newsletter subscription form hitting a simple Express API
+## 🌟 Features
 
-## Tech stack
+### Frontend (React + Vite)
+- ✨ **Spiritual UI**: Beautiful animations with Framer Motion and AOS
+- 📅 **Order of Services**: Interactive weekly service schedule
+- 🎉 **Events Management**: Browse and view upcoming church events
+- 📧 **Newsletter**: Subscription with email confirmations
+- 🙏 **Prayer Requests**: Submit and manage prayer requests
+- 📞 **Contact Form**: Direct communication with church staff
+- 📖 **Bible Integration**: Scripture references and spiritual content
+- 📱 **Fully Responsive**: Mobile-first design with Tailwind CSS
 
-- HTML, CSS, JavaScript (no build step)
-- Bootstrap 5, Bootstrap Icons
-- AOS (Animate on Scroll), GLightbox, Isotope + imagesLoaded, Swiper, PureCounter
-- Node.js + Express + Nodemailer (newsletter API)
+### Backend (Node.js + Express)
+- 🔐 **Admin Authentication**: Secure event management
+- 📊 **PostgreSQL Database**: Neon DB with automatic schema initialization
+- 📧 **Email System**: Nodemailer integration with SMTP
+- 🖼️ **Image Uploads**: Multer-based file management
+- ⏰ **Auto Cleanup**: Scheduled cleanup of expired events
+- 🔒 **CORS Protection**: Production-ready security
+- 💾 **RESTful API**: Clean, documented endpoints
 
-## Repository structure
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+ 
+- PostgreSQL database (Neon DB recommended)
+- Gmail account (for SMTP)
+
+### Local Development
+
+#### 1. Clone & Install
+```bash
+git clone <repository-url>
+cd chrch-app
+
+# Install server dependencies
+cd server
+npm install
+
+# Install client dependencies
+cd ../client
+npm install
+```
+
+#### 2. Configure Environment
+
+**Server (.env)**
+```bash
+cd server
+cp .env.example .env
+# Edit .env with your credentials
+```
+
+Required variables:
+```bash
+PORT=5000
+DATABASE_URL=postgresql://...
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+RECEIVING_EMAIL=admin@atgchapel.org
+ADMIN_EMAIL=admin@atgchapel.org
+```
+
+**Client (.env)**
+```bash
+cd client
+cp .env.example .env
+```
+
+Default (for local dev):
+```bash
+VITE_API_URL=http://localhost:5000
+```
+
+#### 3. Run Development Servers
+
+**Terminal 1 - Backend:**
+```bash
+cd server
+npm run dev     # Uses nodemon for auto-restart
+```
+
+**Terminal 2 - Frontend:**
+```bash
+cd client
+npm run dev     # Vite dev server with HMR
+```
+
+Open http://localhost:5173 (or the port Vite displays)
+
+---
+
+## 📋 Project Structure
 
 ```
 chrch-app/
-├─ index.html                    # Main landing page
-├─ Atg.html                      # Alternate/linked home page
-├─ Atgevents.html                # Events detail page
-├─ Atgfounders.html              # Founders page
-├─ Atgservices.html              # Order of Services page
-├─ Mission.html                  # Missions listing
-├─ Bible.html                    # Bible reader + notes
-├─ assets/
-│  ├─ css/main.css               # Site styles (theme tokens + components)
-│  ├─ js/main.js                 # UI behaviors + plugin inits
-│  ├─ img/                       # Images (hero, events, mission, etc.)
-│  └─ vendor/                    # Third-party libraries
-├─ Atg Community/                # Community microsite (custom carousel)
-│  ├─ Comm.html
-│  ├─ app.js                     # Carousel logic
-│  └─ style.css                  # Carousel styles
-├─ Atg Programs/                 # Programs microsite (custom carousel)
-│  ├─ index.html
-│  ├─ app.js                     # Carousel logic
-│  └─ style.css
-├─ js/app.js                     # (Unused by main pages; legacy carousel script)
-└─ server/                       # Newsletter API
-   ├─ server.js                  # Express + Nodemailer endpoint
-   ├─ package.json
-   └─ .env.example               # Sample environment variables (create .env)
+├── client/                      # Frontend (React + Vite)
+│   ├── public/                  # Static assets
+│   │   └── assets/             # Images, CSS, JS
+│   ├── src/
+│   │   ├── components/         # React components
+│   │   │   ├── OrderOfServices.jsx
+│   │   │   ├── EventsSection.jsx
+│   │   │   ├── FloatingHub.jsx
+│   │   │   └── ...
+│   │   ├── pages/              # Page components
+│   │   │   ├── Home.jsx
+│   │   │   ├── Events.jsx
+│   │   │   ├── Services.jsx
+│   │   │   └── ...
+│   │   ├── services/           # API integration
+│   │   │   └── api.js
+│   │   ├── utils/              # Helper functions
+│   │   ├── App.jsx             # Main app component
+│   │   └── main.jsx            # Entry point
+│   ├── .env.example            # Environment template
+│   ├── .env.production         # Production config
+│   ├── vite.config.js          # Vite configuration
+│   ├── tailwind.config.js      # Tailwind CSS config
+│   └── package.json
+│
+├── server/                      # Backend (Node.js + Express)
+│   ├── db/                     # Database utilities
+│   │   ├── config.js           # DB connection
+│   │   ├── schema.sql          # Database schema
+│   │   └── utils.js            # DB helper functions
+│   ├── routes/                 # API routes
+│   │   ├── events.js           # Events CRUD
+│   │   └── upload.js           # File uploads
+│   ├── .env.example            # Environment template
+│   ├── render.yaml             # Render deployment config
+│   ├── server.js               # Main server file
+│   ├── setup-admin.js          # Admin setup script
+│   └── package.json
+│
+├── RENDER-DEPLOYMENT-GUIDE.md  # Complete deployment guide
+├── QUICK-DEPLOY-CHECKLIST.md  # Quick deployment reference
+├── DEPLOYMENT-READY.md         # Deployment summary
+├── verify-deployment.sh        # Pre-deployment checks
+└── README.md                   # This file
 ```
 
-See also: `docs/ARCHITECTURE.md` for a deeper breakdown of code and behavior.
+---
 
-## Running locally
+## 🎯 API Endpoints
 
-Frontend is static; you can open `index.html` directly, but for the newsletter form to target the local API it helps to serve the site from `localhost` so the script picks the correct base URL.
-
-1) Start the newsletter API
-
-- Prerequisite: Node.js 18+
-- Create environment file
-  - Copy `server/.env.example` to `server/.env` and fill in SMTP settings
-- Install and run
-
-```sh
-cd server
-npm install
-npm start
+### Public Endpoints
+```
+GET    /api/health              # Health check
+GET    /api/events              # Get all events
+GET    /api/events/:id          # Get single event
+POST   /api/newsletter          # Newsletter subscription
+POST   /api/prayer-request      # Submit prayer request
+POST   /api/contact             # Contact form
 ```
 
-The server listens on `PORT` (default 5000) and exposes `POST /api/newsletter`.
+### Admin Endpoints (require adminEmail)
+```
+POST   /api/events              # Create event
+PUT    /api/events/:id          # Update event
+DELETE /api/events/:id          # Delete event
+POST   /api/upload/single       # Upload single image
+POST   /api/upload/multiple     # Upload multiple images
+DELETE /api/upload/delete       # Delete image
+```
 
-2) Serve the frontend (optional but recommended)
+---
 
-Serve the repo root on `http://localhost` (any port). When the hostname includes `localhost`, the footer form in `index.html` will POST to `http://localhost:5000/api/newsletter`.
+## 🔐 Environment Variables
 
-Examples of static servers you can use:
+### Server Environment Variables
 
-- VS Code Live Server extension
-- `python3 -m http.server 8080`
-- `npx serve -l 8080 .`
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `NODE_ENV` | Environment (production/development) | Yes |
+| `PORT` | Server port (default: 5000) | No |
+| `DATABASE_URL` | PostgreSQL connection string | Yes |
+| `CLIENT_URL` | Frontend URL for CORS | Yes (prod) |
+| `SMTP_HOST` | SMTP server host | Yes |
+| `SMTP_PORT` | SMTP server port | Yes |
+| `SMTP_USER` | SMTP username/email | Yes |
+| `SMTP_PASS` | SMTP password/app password | Yes |
+| `RECEIVING_EMAIL` | Admin notification email | Yes |
+| `ADMIN_EMAIL` | Authorized admin email | Yes |
 
-Then open `http://localhost:8080/index.html`.
+### Client Environment Variables
 
-## Configuration
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `VITE_API_URL` | Backend API URL | Yes |
 
-Newsletter API expects these environment variables (see `server/.env.example`):
+---
 
-- SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
-- RECEIVING_EMAIL – where admin notifications go
-- PORT – optional (default 5000)
+## 🚀 Deployment
 
-`index.html` dynamically picks the API base:
+### Render Deployment (Recommended)
 
-- If `window.location.hostname` includes `localhost` → `http://localhost:5000`
-- Else → `https://atgchapelmks-0dm8.onrender.com`
+The application is configured for deployment on Render with separate services:
+- **Backend**: Render Web Service
+- **Frontend**: Netlify or Render Static Site
+- **Database**: Neon PostgreSQL (already configured)
 
-## Notable behaviors
+#### Quick Deploy Steps:
 
-- `assets/js/main.js` wires up: sticky header scrolled state, mobile nav, preloader, scroll-top button, AOS, carousel indicators, Isotope filters, GLightbox, Swiper sliders, and a nav scrollspy.
-- `Bible.html` calls `https://bible-api.com/` and stores notes in `localStorage` keyed by book+chapter.
-- Community/Programs carousels are standalone (custom JS/CSS) and not tied to Bootstrap.
+1. **Verify Deployment Readiness**
+   ```bash
+   ./verify-deployment.sh
+   ```
 
-### Futuristic theme enhancements
+2. **Deploy Backend to Render**
+   - See `RENDER-DEPLOYMENT-GUIDE.md` for detailed steps
+   - Configure environment variables
+   - Deploy and note the URL
 
-- Dark mode toggle is injected at runtime (bottom-right). Preference persists in `localStorage` under `theme` and uses `[data-theme="dark"]` for CSS overrides.
-- Utilities available: `.gradient-text`, `.neon-text`, `.glass`, `.card-glow`, `.btn-neon`.
-- Images auto-get `loading="lazy"` if not specified.
+3. **Deploy Frontend**
+   - Update `client/.env.production` with backend URL
+   - Deploy to Netlify or Render
+   - See deployment guide for options
 
-## Known gaps and polish items
+4. **Update CORS**
+   - Add frontend URL to backend `CLIENT_URL` variable
+   - Backend will auto-restart
 
-- Some navigation labels/links are placeholders (e.g., “Songs”). Previously a stray `ssss e` string appeared in a few menus; this has been cleaned up.
-- Mixed links to `Atg.html` vs `index.html` as the home page.
-- A few pages still reference `forms/newsletter.php`; the live/working newsletter uses the Node API.
-- Duplicate or misspelled files exist (e.g., `Events-detais.html`). Consider deduping and fixing typos.
+#### Deployment Documentation:
+- 📖 **Full Guide**: `RENDER-DEPLOYMENT-GUIDE.md`
+- ⚡ **Quick Reference**: `QUICK-DEPLOY-CHECKLIST.md`
+- ✅ **Ready Status**: `DEPLOYMENT-READY.md`
 
-## License and usage
+---
+
+## 🔧 Scripts
+
+### Server Scripts
+```bash
+npm start              # Start production server
+npm run dev            # Start development server (nodemon)
+npm run setup          # Setup admin user
+```
+
+### Client Scripts
+```bash
+npm run dev            # Start Vite dev server
+npm run build          # Build for production
+npm run preview        # Preview production build
+npm run lint           # Run ESLint
+```
+
+---
+
+## 📧 Email Configuration
+
+### Gmail Setup (Recommended)
+
+1. **Enable 2-Factor Authentication**
+   - Go to Google Account → Security
+   - Enable 2-Step Verification
+
+2. **Generate App Password**
+   - Visit: https://myaccount.google.com/apppasswords
+   - Select "Mail" and "Other (Custom name)"
+   - Copy the 16-character password
+
+3. **Configure in .env**
+   ```bash
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_USER=your-email@gmail.com
+   SMTP_PASS=abcd efgh ijkl mnop  # 16-char app password
+   ```
+
+---
+
+## 🗄️ Database
+
+### Neon PostgreSQL
+
+The application uses Neon PostgreSQL (serverless Postgres):
+- Auto-scaling and serverless
+- Free tier: 0.5 GB storage
+- Automatic backups
+- SSL connections required
+
+### Schema
+
+Main tables:
+- `events`: Church events with details
+- Automatic timestamps and UUID IDs
+- JSON support for flexible data
+
+### Initialization
+
+Database schema is automatically initialized on server startup:
+```bash
+npm start  # Auto-runs schema initialization
+```
+
+Manual setup:
+```bash
+npm run setup  # Initialize and create admin
+```
+
+---
+
+## 🎨 Frontend Tech Stack
+
+- **Framework**: React 18+
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS + Custom CSS
+- **Animations**: Framer Motion + AOS
+- **UI Components**: Bootstrap 5
+- **Icons**: Bootstrap Icons
+- **HTTP Client**: Axios
+- **Routing**: React Router DOM
+- **Carousel**: Swiper
+- **Lightbox**: GLightbox
+
+---
+
+## 🔒 Backend Tech Stack
+
+- **Runtime**: Node.js 18+
+- **Framework**: Express 5
+- **Database**: PostgreSQL (Neon)
+- **ORM/Client**: pg (node-postgres)
+- **Email**: Nodemailer
+- **File Uploads**: Multer
+- **Scheduling**: node-cron
+- **Security**: CORS
+- **Environment**: dotenv
+
+---
+
+## 🧪 Testing
+
+### Manual Testing Checklist
+
+**Frontend:**
+- [ ] Homepage loads correctly
+- [ ] Order of Services displays and is interactive
+- [ ] Events page shows all events
+- [ ] Newsletter subscription works
+- [ ] Contact form submits
+- [ ] Prayer request form works
+- [ ] Navigation works on all pages
+- [ ] Mobile responsive design
+
+**Backend:**
+- [ ] Health check returns OK
+- [ ] Events API returns data
+- [ ] Admin can create events
+- [ ] Images upload successfully
+- [ ] Emails are sent
+- [ ] Database cleanup runs
+
+---
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**CORS Error:**
+```
+Access to fetch has been blocked by CORS policy
+```
+**Solution:** Verify `CLIENT_URL` matches your frontend URL exactly
+
+**Database Connection Error:**
+```
+Error: connect ECONNREFUSED
+```
+**Solution:** Check `DATABASE_URL` and ensure Neon DB is active
+
+**Email Not Sending:**
+```
+Error: Invalid login
+```
+**Solution:** Use Gmail App Password, not regular password
+
+**Build Errors:**
+```
+Module not found
+```
+**Solution:** Delete `node_modules` and `package-lock.json`, run `npm install`
+
+---
+
+## 📱 Contact Information
+
+**ATG Chapel Machakos**
+- 📍 Mwatu Wa Ngoma Rd, MKS KFA Building, Machakos
+- 📞 +254 714 888 016
+- 📧 atgmksinfo@gmail.com
+
+---
+
+## 📄 License
 
 For church and community use. Contact ATG Chapel Machakos for permissions beyond this scope.
 
-## Contact
+---
 
-- Mwatu Wa Ngoma Rd, MKS KFA Building, Machakos
-- +254 714 888 016
-- atgmksinfo@gmail.com
+## 🙏 Acknowledgments
 
-Blessings as you explore the site.
+Built with love for the ATG Chapel Machakos community.
+
+**"Not giving up meeting together, as some are in the habit of doing, but encouraging one another." - Hebrews 10:25**
+
+---
+
+## 🔗 Quick Links
+
+- [Deployment Guide](RENDER-DEPLOYMENT-GUIDE.md)
+- [Quick Deploy Checklist](QUICK-DEPLOY-CHECKLIST.md)
+- [Deployment Status](DEPLOYMENT-READY.md)
+- [Order of Services Docs](ORDER-OF-SERVICES-COMPLETE.md)
+
+---
+
+**Status**: ✅ Production Ready
+**Version**: 1.0.0
+**Last Updated**: October 2025

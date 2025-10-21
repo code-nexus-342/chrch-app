@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Section from '../components/Section';
 import Layout from '../components/Layout';
 import SpiritualBackgroundEffects from '../components/SpiritualBackgroundEffects';
+import OrderOfServices from '../components/OrderOfServices';
 
 /**
  * ScrollHome Component - New narrative scroll-driven home page
@@ -163,6 +164,11 @@ function ScrollHome() {
             ))}
           </div>
         </Section>
+
+        {/* Order of Services Section */}
+        <div className="scroll-section">
+          <OrderOfServices />
+        </div>
 
         {/* Events Section */}
         <Section

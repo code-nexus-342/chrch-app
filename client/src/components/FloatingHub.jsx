@@ -1,13 +1,20 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
+import AdminLogin from './AdminLogin';
+import EventsAdmin from './EventsAdmin';
 
 /**
  * FloatingHub Component - Main navigation (replaces traditional navbar)
  */
 function FloatingHub() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [showAdminDashboard, setShowAdminDashboard] = useState(false);
+  const [adminEmail, setAdminEmail] = useState('');
   const navigate = useNavigate();
+  const clickTimeoutRef = useRef(null);
+  const clickCountRef = useRef(0);
 
   const toggleHub = () => setIsOpen(!isOpen);
 
@@ -72,6 +79,38 @@ function FloatingHub() {
       navigate(item.target);
     }
     setIsOpen(false);
+  };
+
+  // Handle double-click on main button for admin access
+  const handleMainButtonClick = () => {
+    // First check if it's a double-click for admin
+    clickCountRef.current += 1;
+
+    if (clickCountRef.current === 1) {
+      // First click - set up timeout
+      clickTimeoutRef.current = setTimeout(() => {
+        clickCountRef.current = 0;
+        // If no second click, just toggle the menu
+        toggleHub();
+      }, 400); // 400ms window for double-click
+    } else if (clickCountRef.current === 2) {
+      // Second click - admin access!
+      clearTimeout(clickTimeoutRef.current);
+      clickCountRef.current = 0;
+      setShowAdminLogin(true);
+      setIsOpen(false); // Close menu if open
+    }
+  };
+
+  const handleAdminLogin = (email) => {
+    setAdminEmail(email);
+    setShowAdminLogin(false);
+    setShowAdminDashboard(true);
+  };
+
+  const handleAdminClose = () => {
+    setShowAdminDashboard(false);
+    setAdminEmail('');
   };
 
   const containerVariants = {
@@ -273,12 +312,13 @@ function FloatingHub() {
         {/* Main floating button */}
         <motion.button
           className={`floating-hub-main-btn ${isOpen ? 'open' : ''}`}
-          onClick={toggleHub}
+          onClick={handleMainButtonClick}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           animate={{
             rotate: isOpen ? 45 : 0,
           }}
+          title="Click to open menu, Double-click for admin access"
           aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
           aria-expanded={isOpen}
         >
@@ -333,6 +373,20 @@ function FloatingHub() {
           />
         )}
       </div>
+
+      {/* Admin Login Modal */}
+      <AdminLogin 
+        isOpen={showAdminLogin}
+        onClose={() => setShowAdminLogin(false)}
+        onLogin={handleAdminLogin}
+      />
+
+      {/* Admin Dashboard Modal */}
+      <EventsAdmin 
+        isOpen={showAdminDashboard}
+        onClose={handleAdminClose}
+        adminEmail={adminEmail}
+      />
     </>
   );
 }

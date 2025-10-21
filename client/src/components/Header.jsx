@@ -1,11 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import AdminLogin from './AdminLogin';
+import EventsAdmin from './EventsAdmin';
 
 function Header() {
   const [mobileNavActive, setMobileNavActive] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [showAdminDashboard, setShowAdminDashboard] = useState(false);
+  const [adminEmail, setAdminEmail] = useState('');
   const location = useLocation();
+  const clickTimeoutRef = useRef(null);
+  const clickCountRef = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,6 +63,32 @@ function Header() {
     setActiveDropdown(activeDropdown === dropdownName ? null : dropdownName);
   };
 
+  // Handle double-click on logo for admin access
+  const handleLogoClick = () => {
+    clickCountRef.current += 1;
+
+    if (clickCountRef.current === 1) {
+      clickTimeoutRef.current = setTimeout(() => {
+        clickCountRef.current = 0;
+      }, 500); // Reset after 500ms
+    } else if (clickCountRef.current === 2) {
+      clearTimeout(clickTimeoutRef.current);
+      clickCountRef.current = 0;
+      setShowAdminLogin(true);
+    }
+  };
+
+  const handleAdminLogin = (email) => {
+    setAdminEmail(email);
+    setShowAdminLogin(false);
+    setShowAdminDashboard(true);
+  };
+
+  const handleAdminClose = () => {
+    setShowAdminDashboard(false);
+    setAdminEmail('');
+  };
+
   return (
     <>
       {/* Theme Toggle Button */}
@@ -66,9 +99,15 @@ function Header() {
         className={`header d-flex align-items-center fixed-top glass ${scrolled ? 'scrolled' : ''}`}
       >
         <div className="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
-          <Link to="/" className="logo d-flex align-items-center">
-            <h1 className="sitename divine-gradient-text">ATG Chapel</h1>
-          </Link>
+          <div 
+            onClick={handleLogoClick}
+            style={{ cursor: 'pointer' }}
+            title="Double-click for admin access"
+          >
+            <Link to="/" className="logo d-flex align-items-center">
+              <h1 className="sitename divine-gradient-text">ATG Chapel</h1>
+            </Link>
+          </div>
 
           <nav id="navmenu" className={`navmenu ${mobileNavActive ? 'mobile-nav-active' : ''}`}>
             <ul>
@@ -108,6 +147,20 @@ function Header() {
           </nav>
         </div>
       </header>
+
+      {/* Admin Login Modal */}
+      <AdminLogin 
+        isOpen={showAdminLogin}
+        onClose={() => setShowAdminLogin(false)}
+        onLogin={handleAdminLogin}
+      />
+
+      {/* Admin Dashboard Modal */}
+      <EventsAdmin 
+        isOpen={showAdminDashboard}
+        onClose={handleAdminClose}
+        adminEmail={adminEmail}
+      />
     </>
   );
 }

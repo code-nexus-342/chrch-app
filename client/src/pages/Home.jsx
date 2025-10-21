@@ -8,6 +8,7 @@ import MediaTeamSection from '../components/MediaTeamSection';
 import EventsSection from '../components/EventsSection';
 import ContactSection from '../components/ContactSection';
 import PrayerRequestModal from '../components/PrayerRequestModal';
+import OrderOfServices from '../components/OrderOfServices';
 import { initVendorLibraries } from '../utils/helpers';
 
 function Home() {
@@ -33,6 +34,7 @@ function Home() {
       <HeroSection />
       <ThisWeekSection />
       <AboutSection />
+      <OrderOfServices />
       <MediaTeamSection />
       <EventsSection />
       <ContactSection />
