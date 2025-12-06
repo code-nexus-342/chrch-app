@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ScrollToTop from './components/ScrollToTop';
+import Navbar from './components/layout/Navbar';
 import Footer from './components/Footer';
 import FloatingHub from './components/FloatingHub';
 import Home from './pages/Home';
@@ -11,14 +13,16 @@ import Events from './pages/Events';
 import EventsDetails from './pages/EventsDetails';
 import Founders from './pages/Founders';
 import Services from './pages/Services';
+import Contact from './pages/Contact';
 import './App.css';
 import './styles/custom-pages.css';
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <div className="App">
-        {/* Header/Navbar removed - using FloatingHub only */}
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -30,9 +34,11 @@ function App() {
           <Route path="/events/:id" element={<EventsDetails />} />
           <Route path="/founders" element={<Founders />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
         <Footer />
-        <FloatingHub />
+        {/* FloatingHub kept as secondary nav or removed if redundant. Keeping for now as requested by user's initial codebase style but Navbar is primary. */}
+        {/* <FloatingHub /> */}
       </div>
     </Router>
   );

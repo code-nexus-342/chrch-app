@@ -13,8 +13,6 @@
     "@tailwindcss/postcss": "^4.1.14",
     "aos": "^2.3.4",
     "axios": "^1.12.2",
-    "bootstrap": "^5.3.8",
-    "bootstrap-icons": "^1.13.1",
     "framer-motion": "^12.23.24",
     "glightbox": "^3.3.1",
     "imagesloaded": "^5.0.0",

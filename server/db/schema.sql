@@ -53,3 +53,11 @@ CREATE TABLE IF NOT EXISTS admin_users (
 -- Grant necessary permissions (if needed)
 -- GRANT SELECT, INSERT, UPDATE, DELETE ON events TO your_user;
 -- GRANT SELECT ON admin_users TO your_user;
+
+-- Create subscribers table for parameters newsletter storage
+CREATE TABLE IF NOT EXISTS subscribers (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+

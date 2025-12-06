@@ -165,6 +165,7 @@ function EventsAdmin({ isOpen, onClose, adminEmail }) {
       resetForm();
       fetchEvents();
       setShowForm(false);
+      window.dispatchEvent(new Event('events-updated'));
     } catch (error) {
       showMessage('error', error.message);
     } finally {
@@ -197,6 +198,7 @@ function EventsAdmin({ isOpen, onClose, adminEmail }) {
       await apiService.deleteEvent(eventId, adminEmail);
       showMessage('success', 'Event deleted successfully!');
       fetchEvents();
+      window.dispatchEvent(new Event('events-updated'));
     } catch (error) {
       showMessage('error', error.message);
     } finally {
@@ -229,418 +231,55 @@ function EventsAdmin({ isOpen, onClose, adminEmail }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="admin-overlay"
+        className="fixed inset-0 z-[100] bg-dark-deep/80 backdrop-blur-sm flex items-center justify-center p-4"
         onClick={onClose}
       >
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
-          className="admin-modal"
+          className="bg-white dark:bg-dark-lighter w-full max-w-5xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
           onClick={(e) => e.stopPropagation()}
         >
-          <style>{`
-            .admin-overlay {
-              position: fixed;
-              top: 0;
-              left: 0;
-              right: 0;
-              bottom: 0;
-              background: rgba(0, 0, 0, 0.8);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              z-index: 10000;
-              padding: 1rem;
-              overflow-y: auto;
-            }
-
-            .admin-modal {
-              background: white;
-              border-radius: 20px;
-              width: 100%;
-              max-width: 1200px;
-              max-height: 90vh;
-              overflow-y: auto;
-              box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            }
-
-            .admin-header {
-              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-              color: white;
-              padding: 2rem;
-              border-radius: 20px 20px 0 0;
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-            }
-
-            .admin-header h2 {
-              margin: 0;
-              font-size: 1.8rem;
-            }
-
-            .admin-close {
-              background: rgba(255,255,255,0.2);
-              border: none;
-              width: 40px;
-              height: 40px;
-              border-radius: 50%;
-              color: white;
-              font-size: 1.5rem;
-              cursor: pointer;
-              transition: all 0.3s ease;
-            }
-
-            .admin-close:hover {
-              background: rgba(255,255,255,0.3);
-              transform: rotate(90deg);
-            }
-
-            .admin-content {
-              padding: 2rem;
-            }
-
-            .admin-actions {
-              display: flex;
-              gap: 1rem;
-              margin-bottom: 2rem;
-            }
-
-            .btn-admin {
-              padding: 0.8rem 1.5rem;
-              border: none;
-              border-radius: 10px;
-              font-weight: 600;
-              cursor: pointer;
-              transition: all 0.3s ease;
-              display: inline-flex;
-              align-items: center;
-              gap: 0.5rem;
-            }
-
-            .btn-admin-primary {
-              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-              color: white;
-            }
-
-            .btn-admin-primary:hover {
-              box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-              transform: translateY(-2px);
-            }
-
-            .btn-admin-secondary {
-              background: #f0f0f0;
-              color: #333;
-            }
-
-            .btn-admin-secondary:hover {
-              background: #e0e0e0;
-            }
-
-            .message-box {
-              padding: 1rem;
-              border-radius: 10px;
-              margin-bottom: 1rem;
-              display: flex;
-              align-items: center;
-              gap: 0.5rem;
-            }
-
-            .message-success {
-              background: #d4edda;
-              color: #155724;
-              border: 1px solid #c3e6cb;
-            }
-
-            .message-error {
-              background: #f8d7da;
-              color: #721c24;
-              border: 1px solid #f5c6cb;
-            }
-
-            .admin-form {
-              background: #f8f9fa;
-              padding: 2rem;
-              border-radius: 15px;
-              margin-bottom: 2rem;
-            }
-
-            .form-grid {
-              display: grid;
-              grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-              gap: 1.5rem;
-              margin-bottom: 1.5rem;
-            }
-
-            .form-group {
-              display: flex;
-              flex-direction: column;
-            }
-
-            .form-group label {
-              font-weight: 600;
-              margin-bottom: 0.5rem;
-              color: #333;
-              font-size: 0.9rem;
-            }
-
-            .form-group input,
-            .form-group select,
-            .form-group textarea {
-              padding: 0.8rem;
-              border: 2px solid #e0e0e0;
-              border-radius: 10px;
-              font-size: 1rem;
-              transition: all 0.3s ease;
-            }
-
-            .form-group input:focus,
-            .form-group select:focus,
-            .form-group textarea:focus {
-              outline: none;
-              border-color: #667eea;
-              box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            }
-
-            .form-group textarea {
-              min-height: 120px;
-              resize: vertical;
-              font-family: inherit;
-            }
-
-            .checkbox-group {
-              display: flex;
-              align-items: center;
-              gap: 0.5rem;
-            }
-
-            .checkbox-group input[type="checkbox"] {
-              width: 20px;
-              height: 20px;
-              cursor: pointer;
-            }
-
-            .form-actions {
-              display: flex;
-              gap: 1rem;
-              justify-content: flex-end;
-              margin-top: 1.5rem;
-            }
-
-            .events-list {
-              display: grid;
-              gap: 1rem;
-            }
-
-            .event-item {
-              background: #f8f9fa;
-              padding: 1.5rem;
-              border-radius: 15px;
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              transition: all 0.3s ease;
-            }
-
-            .event-item:hover {
-              box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            }
-
-            .event-info h3 {
-              margin: 0 0 0.5rem 0;
-              color: #333;
-            }
-
-            .event-meta {
-              display: flex;
-              gap: 1rem;
-              font-size: 0.9rem;
-              color: #666;
-            }
-
-            .event-badge {
-              display: inline-block;
-              padding: 0.3rem 0.8rem;
-              border-radius: 20px;
-              font-size: 0.8rem;
-              font-weight: 600;
-              margin-right: 0.5rem;
-            }
-
-            .badge-featured {
-              background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-              color: white;
-            }
-
-            .badge-type {
-              background: #e3f2fd;
-              color: #1976d2;
-            }
-
-            .event-actions {
-              display: flex;
-              gap: 0.5rem;
-            }
-
-            .btn-icon {
-              width: 40px;
-              height: 40px;
-              border-radius: 50%;
-              border: none;
-              cursor: pointer;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              transition: all 0.3s ease;
-              font-size: 1.1rem;
-            }
-
-            .btn-edit {
-              background: #e3f2fd;
-              color: #1976d2;
-            }
-
-            .btn-edit:hover {
-              background: #1976d2;
-              color: white;
-            }
-
-            .btn-delete {
-              background: #ffebee;
-              color: #c62828;
-            }
-
-            .btn-delete:hover {
-              background: #c62828;
-              color: white;
-            }
-
-            .loading-spinner {
-              text-align: center;
-              padding: 2rem;
-              color: #667eea;
-            }
-
-            .help-text {
-              font-size: 0.85rem;
-              color: #666;
-              margin-top: 0.3rem;
-            }
-
-            .uploaded-images {
-              margin-top: 1rem;
-            }
-
-            .uploaded-images label {
-              display: block;
-              font-weight: 600;
-              margin-bottom: 0.8rem;
-              color: #333;
-            }
-
-            .image-preview-grid {
-              display: grid;
-              grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-              gap: 1rem;
-            }
-
-            .image-preview-item {
-              position: relative;
-              width: 100%;
-              aspect-ratio: 1;
-              border-radius: 10px;
-              overflow: hidden;
-              border: 2px solid #e0e0e0;
-              transition: all 0.3s ease;
-            }
-
-            .image-preview-item:hover {
-              border-color: #667eea;
-              box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
-            }
-
-            .image-preview-item img {
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
-            }
-
-            .remove-image-btn {
-              position: absolute;
-              top: 5px;
-              right: 5px;
-              width: 28px;
-              height: 28px;
-              border-radius: 50%;
-              background: rgba(198, 40, 40, 0.9);
-              color: white;
-              border: none;
-              font-size: 1.2rem;
-              font-weight: bold;
-              cursor: pointer;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              transition: all 0.3s ease;
-              line-height: 1;
-              padding: 0;
-            }
-
-            .remove-image-btn:hover {
-              background: #c62828;
-              transform: scale(1.1);
-            }
-
-            @media (max-width: 768px) {
-              .admin-modal {
-                max-width: 100%;
-                max-height: 100vh;
-                border-radius: 0;
-              }
-
-              .admin-header {
-                border-radius: 0;
-              }
-
-              .form-grid {
-                grid-template-columns: 1fr;
-              }
-
-              .event-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-              }
-            }
-          `}</style>
-
-          <div className="admin-header">
-            <h2>🎯 Events Admin Dashboard</h2>
-            <button className="admin-close" onClick={onClose}>×</button>
+          <div className="bg-gradient-to-r from-primary to-secondary p-6 text-white flex justify-between items-center shrink-0">
+            <h2 className="text-2xl font-bold flex items-center gap-3">
+              🎯 Events Admin Dashboard
+            </h2>
+            <button 
+              className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-xl transition-all hover:rotate-90"
+              onClick={onClose}
+            >
+              ×
+            </button>
           </div>
 
-          <div className="admin-content">
+          <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
             {message.text && (
-              <div className={`message-box message-${message.type}`}>
+              <div className={`mb-4 p-4 rounded-xl flex items-center gap-3 ${
+                message.type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'
+              }`}>
                 <i className={`bi bi-${message.type === 'success' ? 'check-circle' : 'exclamation-circle'}`}></i>
-                <span>{message.text}</span>
+                <span className="font-medium">{message.text}</span>
               </div>
             )}
 
-            <div className="admin-actions">
+            <div className="flex gap-4 mb-8">
               <button 
-                className="btn-admin btn-admin-primary"
+                className={`px-6 py-2.5 rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl active:scale-95 flex items-center gap-2 ${
+                  showForm 
+                  ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' 
+                  : 'bg-gradient-to-r from-primary to-secondary text-white shadow-glow-sm hover:shadow-glow-md'
+                }`}
                 onClick={() => {
                   resetForm();
                   setShowForm(!showForm);
                 }}
               >
-                <i className="bi bi-plus-circle"></i>
+                <i className={`bi ${showForm ? 'bi-x-lg' : 'bi-plus-circle'}`}></i>
                 {showForm ? 'Cancel' : 'Add New Event'}
               </button>
               <button 
-                className="btn-admin btn-admin-secondary"
+                className="px-6 py-2.5 rounded-xl font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all flex items-center gap-2"
                 onClick={fetchEvents}
               >
                 <i className="bi bi-arrow-clockwise"></i>
@@ -648,13 +287,15 @@ function EventsAdmin({ isOpen, onClose, adminEmail }) {
               </button>
             </div>
 
-            {showForm && (
-              <form className="admin-form" onSubmit={handleSubmit}>
-                <h3>{selectedEvent ? '✏️ Edit Event' : '➕ Create New Event'}</h3>
+            {showForm ? (
+              <form className="bg-gray-50 dark:bg-dark-deep rounded-2xl p-6 border border-gray-100 dark:border-white/5" onSubmit={handleSubmit}>
+                <h3 className="text-xl font-bold mb-6 text-dark dark:text-white flex items-center gap-2">
+                  {selectedEvent ? '✏️ Edit Event' : '➕ Create New Event'}
+                </h3>
                 
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="title">Event Title *</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="title" className="font-semibold text-sm text-gray-700 dark:text-gray-300">Event Title *</label>
                     <input
                       type="text"
                       id="title"
@@ -663,17 +304,19 @@ function EventsAdmin({ isOpen, onClose, adminEmail }) {
                       onChange={handleInputChange}
                       required
                       placeholder="e.g., Youth Conference 2026"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-dark-lighter focus:ring-2 focus:ring-primary outline-none transition-all"
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="type">Event Type *</label>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="type" className="font-semibold text-sm text-gray-700 dark:text-gray-300">Event Type *</label>
                     <select
                       id="type"
                       name="type"
                       value={formData.type}
                       onChange={handleInputChange}
                       required
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-dark-lighter focus:ring-2 focus:ring-primary outline-none transition-all"
                     >
                       {eventTypes.map(type => (
                         <option key={type} value={type}>{type}</option>
@@ -681,8 +324,8 @@ function EventsAdmin({ isOpen, onClose, adminEmail }) {
                     </select>
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="date">Display Date *</label>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="date" className="font-semibold text-sm text-gray-700 dark:text-gray-300">Display Date *</label>
                     <input
                       type="text"
                       id="date"
@@ -690,13 +333,14 @@ function EventsAdmin({ isOpen, onClose, adminEmail }) {
                       value={formData.date}
                       onChange={handleInputChange}
                       required
-                      placeholder="e.g., 15 March, 2026 or 15-17 March"
+                      placeholder="e.g., 15 March"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-dark-lighter focus:ring-2 focus:ring-primary outline-none transition-all"
                     />
-                    <span className="help-text">Human-readable format</span>
+                    <span className="text-xs text-gray-500">Human-readable format</span>
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="event_datetime">Actual Date & Time *</label>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="event_datetime" className="font-semibold text-sm text-gray-700 dark:text-gray-300">Actual Date & Time *</label>
                     <input
                       type="datetime-local"
                       id="event_datetime"
@@ -704,12 +348,12 @@ function EventsAdmin({ isOpen, onClose, adminEmail }) {
                       value={formData.event_datetime}
                       onChange={handleInputChange}
                       required
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-dark-lighter focus:ring-2 focus:ring-primary outline-none transition-all"
                     />
-                    <span className="help-text">Event auto-deletes after this time</span>
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="venue">Venue *</label>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="venue" className="font-semibold text-sm text-gray-700 dark:text-gray-300">Venue *</label>
                     <input
                       type="text"
                       id="venue"
@@ -718,11 +362,12 @@ function EventsAdmin({ isOpen, onClose, adminEmail }) {
                       onChange={handleInputChange}
                       required
                       placeholder="e.g., ATG Chapel Hall"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-dark-lighter focus:ring-2 focus:ring-primary outline-none transition-all"
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="host">Host/Organizer *</label>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="host" className="font-semibold text-sm text-gray-700 dark:text-gray-300">Host/Organizer *</label>
                     <input
                       type="text"
                       id="host"
@@ -731,11 +376,12 @@ function EventsAdmin({ isOpen, onClose, adminEmail }) {
                       onChange={handleInputChange}
                       required
                       placeholder="e.g., ATG Youth Ministry"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-dark-lighter focus:ring-2 focus:ring-primary outline-none transition-all"
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="contact">Contact Number *</label>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="contact" className="font-semibold text-sm text-gray-700 dark:text-gray-300">Contact Number *</label>
                     <input
                       type="tel"
                       id="contact"
@@ -744,12 +390,13 @@ function EventsAdmin({ isOpen, onClose, adminEmail }) {
                       onChange={handleInputChange}
                       required
                       placeholder="0714888066"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-dark-lighter focus:ring-2 focus:ring-primary outline-none transition-all"
                     />
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="description">Description *</label>
+                <div className="flex flex-col gap-2 mb-6">
+                  <label htmlFor="description" className="font-semibold text-sm text-gray-700 dark:text-gray-300">Description *</label>
                   <textarea
                     id="description"
                     name="description"
@@ -757,53 +404,56 @@ function EventsAdmin({ isOpen, onClose, adminEmail }) {
                     onChange={handleInputChange}
                     required
                     placeholder="Describe the event in detail..."
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-dark-lighter focus:ring-2 focus:ring-primary outline-none transition-all min-h-[120px]"
                   />
                 </div>
 
                 {/* Image Upload Section */}
-                <div className="form-group">
-                  <label htmlFor="images">Event Images</label>
-                  <input
-                    type="file"
-                    id="images"
-                    accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
-                    multiple
-                    onChange={handleFileSelect}
-                    disabled={uploadingImages}
-                    style={{ 
-                      padding: '0.8rem',
-                      border: '2px dashed #667eea',
-                      borderRadius: '10px',
-                      cursor: uploadingImages ? 'not-allowed' : 'pointer',
-                      backgroundColor: uploadingImages ? '#f0f0f0' : 'white'
-                    }}
-                  />
-                  <span className="help-text">
-                    {uploadingImages 
-                      ? '⏳ Uploading images...' 
-                      : 'Select up to 5 images (JPEG, PNG, GIF, WebP). Max 5MB per image.'}
-                  </span>
+                <div className="flex flex-col gap-2 mb-6">
+                  <label htmlFor="images" className="font-semibold text-sm text-gray-700 dark:text-gray-300">Event Images</label>
+                  <div className={`border-2 border-dashed rounded-xl p-8 text-center transition-all ${
+                    uploadingImages 
+                      ? 'border-gray-300 bg-gray-50 cursor-not-allowed' 
+                      : 'border-primary/50 hover:border-primary/100 hover:bg-primary/5 cursor-pointer bg-white dark:bg-dark-lighter'
+                  }`}>
+                    <input
+                      type="file"
+                      id="images"
+                      accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                      multiple
+                      onChange={handleFileSelect}
+                      disabled={uploadingImages}
+                      className="hidden"
+                    />
+                    <label htmlFor="images" className="cursor-pointer w-full h-full flex flex-col items-center justify-center gap-2">
+                      <i className={`bi ${uploadingImages ? 'bi-hourglass-split animate-spin' : 'bi-cloud-upload'} text-3xl text-primary`}></i>
+                      <span className="font-medium text-gray-600 dark:text-gray-400">
+                        {uploadingImages ? 'Uploading...' : 'Click to select images'}
+                      </span>
+                      <span className="text-xs text-gray-500">Max 5MB per image (JPEG, PNG, WebP)</span>
+                    </label>
+                  </div>
                 </div>
 
                 {/* Display uploaded images */}
                 {formData.images.length > 0 && (
-                  <div className="uploaded-images">
-                    <label>Uploaded Images ({formData.images.length}):</label>
-                    <div className="image-preview-grid">
+                  <div className="mb-6">
+                    <label className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-3 block">Uploaded Images ({formData.images.length})</label>
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                       {formData.images.map((imagePath, index) => (
-                        <div key={index} className="image-preview-item">
+                        <div key={index} className="relative group aspect-square rounded-xl overflow-hidden border border-gray-200 dark:border-white/10">
                           <img 
                             src={getImageUrl(imagePath)} 
                             alt={`Event ${index + 1}`}
+                            className="w-full h-full object-cover"
                             onError={(e) => {
                               e.target.src = 'https://via.placeholder.com/150?text=Image+Not+Found';
                             }}
                           />
                           <button
                             type="button"
-                            className="remove-image-btn"
                             onClick={() => handleRemoveImage(index)}
-                            title="Remove image"
+                            className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 shadow-lg"
                           >
                             ×
                           </button>
@@ -812,86 +462,91 @@ function EventsAdmin({ isOpen, onClose, adminEmail }) {
                     </div>
                   </div>
                 )}
-
-                <div className="checkbox-group">
-                  <input
-                    type="checkbox"
-                    id="featured"
-                    name="featured"
-                    checked={formData.featured}
-                    onChange={handleInputChange}
-                  />
-                  <label htmlFor="featured">⭐ Featured Event</label>
-                </div>
-
-                <div className="form-actions">
-                  <button 
-                    type="button" 
-                    className="btn-admin btn-admin-secondary"
-                    onClick={() => {
-                      resetForm();
-                      setShowForm(false);
-                    }}
+                
+                <div className="flex justify-end gap-3 mt-8 pt-6 border-t border-gray-200 dark:border-white/10">
+                   <button
+                    type="button"
+                    onClick={() => setShowForm(false)}
+                    className="px-6 py-2.5 rounded-xl font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all"
                   >
                     Cancel
                   </button>
-                  <button 
-                    type="submit" 
-                    className="btn-admin btn-admin-primary"
+                  <button
+                    type="submit"
                     disabled={loading}
+                    className="px-6 py-2.5 rounded-xl font-semibold bg-gradient-to-r from-primary to-secondary text-white shadow-glow-sm hover:shadow-glow-md hover:translate-y-[-2px] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    {loading ? 'Saving...' : selectedEvent ? 'Update Event' : 'Create Event'}
+                    {loading && <i className="bi bi-arrow-repeat animate-spin"></i>}
+                    {selectedEvent ? 'Update Event' : 'Create Event'}
                   </button>
                 </div>
               </form>
-            )}
+            ) : (
+              <div className="grid gap-4">
+                {loading && (
+                   <div className="text-center py-12">
+                      <i className="bi bi-arrow-repeat animate-spin text-4xl text-primary"></i>
+                      <p className="mt-4 text-gray-500">Loading events...</p>
+                   </div>
+                )}
 
-            <div className="events-list">
-              <h3>📅 All Events ({events.length})</h3>
-              {loading && !showForm ? (
-                <div className="loading-spinner">
-                  <i className="bi bi-hourglass-split" style={{ fontSize: '2rem' }}></i>
-                  <p>Loading events...</p>
-                </div>
-              ) : events.length === 0 ? (
-                <p style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
-                  No events yet. Create your first event!
-                </p>
-              ) : (
-                events.map(event => (
-                  <div key={event.id} className="event-item">
-                    <div className="event-info">
-                      <div>
-                        {event.featured && <span className="event-badge badge-featured">⭐ Featured</span>}
-                        <span className="event-badge badge-type">{event.type}</span>
+                {!loading && events.length === 0 && (
+                  <div className="text-center py-12 bg-gray-50 dark:bg-dark-deep rounded-2xl border border-dashed border-gray-300">
+                    <i className="bi bi-calendar-x text-4xl text-gray-400"></i>
+                    <p className="mt-2 text-gray-500">No events found</p>
+                  </div>
+                )}
+
+                {events.map((event) => (
+                  <div key={event.id} className="bg-white dark:bg-dark-lighter p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-4 group">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-lg font-bold text-dark dark:text-white">{event.title}</h3>
+                        {event.featured && (
+                          <span className="px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-sm">
+                            Featured
+                          </span>
+                        )}
+                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+                          {event.type}
+                        </span>
                       </div>
-                      <h3>{event.title}</h3>
-                      <div className="event-meta">
-                        <span><i className="bi bi-calendar"></i> {event.date}</span>
-                        <span><i className="bi bi-geo-alt"></i> {event.venue}</span>
-                        <span><i className="bi bi-telephone"></i> {event.contact}</span>
+                      <div className="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-400">
+                        <span className="flex items-center gap-1">
+                          <i className="bi bi-calendar-event"></i>
+                          {event.date}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <i className="bi bi-geo-alt"></i>
+                          {event.venue}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <i className="bi bi-clock"></i>
+                          {new Date(event.event_datetime).toLocaleString()}
+                        </span>
                       </div>
                     </div>
-                    <div className="event-actions">
-                      <button 
-                        className="btn-icon btn-edit"
+
+                    <div className="flex gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all">
+                      <button
                         onClick={() => handleEdit(event)}
+                        className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 flex items-center justify-center transition-all"
                         title="Edit"
                       >
-                        <i className="bi bi-pencil"></i>
+                        <i className="bi bi-pencil-fill"></i>
                       </button>
-                      <button 
-                        className="btn-icon btn-delete"
+                      <button
                         onClick={() => handleDelete(event.id)}
+                        className="w-10 h-10 rounded-full bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 flex items-center justify-center transition-all"
                         title="Delete"
                       >
-                        <i className="bi bi-trash"></i>
+                        <i className="bi bi-trash-fill"></i>
                       </button>
                     </div>
                   </div>
-                ))
-              )}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </motion.div>
       </motion.div>

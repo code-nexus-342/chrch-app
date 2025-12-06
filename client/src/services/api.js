@@ -118,6 +118,7 @@ const apiService = {
       const response = await axios.post(`${API_BASE_URL}/api/upload/single`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'x-admin-email': adminEmail,
         },
       });
       return response.data;
@@ -138,6 +139,7 @@ const apiService = {
       const response = await axios.post(`${API_BASE_URL}/api/upload/multiple`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'x-admin-email': adminEmail,
         },
       });
       return response.data;

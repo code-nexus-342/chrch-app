@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import AOS from 'aos';
-import Swiper from 'swiper';
-import 'swiper/css';
-import 'swiper/css/pagination';
+import { motion, AnimatePresence } from 'framer-motion';
 import apiService from '../services/api';
+import Section from '../components/ui/Section';
 
 function Events() {
   const [selectedFilter, setSelectedFilter] = useState('all');
@@ -32,15 +29,6 @@ function Events() {
     return `${API_BASE_URL}${imagePath}`;
   };
 
-  // Initialize AOS
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      easing: 'ease-in-out',
-      once: true
-    });
-  }, []);
-
   // Fetch events from API
   useEffect(() => {
     const fetchEvents = async () => {
@@ -59,6 +47,13 @@ function Events() {
     };
 
     fetchEvents();
+
+    const handleEventsUpdate = () => {
+      fetchEvents();
+    };
+
+    window.addEventListener('events-updated', handleEventsUpdate);
+    return () => window.removeEventListener('events-updated', handleEventsUpdate);
   }, []);
 
   // Filter events based on selected filter
@@ -74,445 +69,185 @@ function Events() {
     { label: 'All Events', value: 'all' },
     { label: 'Crusades', value: 'crusade' },
     { label: 'Conferences', value: 'conference' },
-    { label: 'Fellowship', value: 'fellowship' },
-    { label: 'Special Services', value: 'special service' }
+    { label: 'Fellowships', value: 'fellowship' },
+    { label: 'Special Services', value: 'special service' },
+    { label: 'Workshops', value: 'workshop' },
+    { label: 'Prayer Meetings', value: 'prayer meeting' },
+    { label: 'Youth Events', value: 'youth event' },
+    { label: 'Community Outreach', value: 'community outreach' }
   ];
 
+  const getEventTypeColor = (type) => {
+    switch(type.toLowerCase()) {
+      case 'crusade': return 'blue';
+      case 'conference': return 'purple';
+      case 'fellowship': return 'green';
+      case 'special service': return 'amber';
+      default: return 'gray';
+    }
+  };
+
   return (
-    <>
-      <style>{`
-        .events-page {
-          min-height: 100vh;
-          background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        }
-
-        .events-hero {
-          position: relative;
-          height: 60vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          text-align: center;
-          overflow: hidden;
-        }
-
-        .events-hero::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: url('/assets/img/Atg-carousel-1.jpg') center/cover;
-          opacity: 0.2;
-          z-index: 0;
-        }
-
-        .events-hero-content {
-          position: relative;
-          z-index: 1;
-          max-width: 800px;
-          padding: 2rem;
-        }
-
-        .events-hero h1 {
-          font-size: 3.5rem;
-          font-weight: 700;
-          margin-bottom: 1rem;
-          text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .events-hero p {
-          font-size: 1.3rem;
-          opacity: 0.95;
-        }
-
-        .events-container {
-          max-width: 1400px;
-          margin: -80px auto 0;
-          padding: 0 2rem 4rem;
-          position: relative;
-          z-index: 2;
-        }
-
-        .events-filters {
-          background: white;
-          border-radius: 50px;
-          padding: 1rem 2rem;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-          display: flex;
-          gap: 1rem;
-          flex-wrap: wrap;
-          justify-content: center;
-          margin-bottom: 3rem;
-        }
-
-        .filter-btn {
-          padding: 0.7rem 1.5rem;
-          border: none;
-          border-radius: 30px;
-          background: transparent;
-          color: #666;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          font-size: 0.95rem;
-        }
-
-        .filter-btn:hover {
-          background: #f0f0f0;
-          color: #333;
-        }
-
-        .filter-btn.active {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .events-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-          gap: 2rem;
-          margin-top: 2rem;
-        }
-
-        .event-card {
-          background: white;
-          border-radius: 20px;
-          overflow: hidden;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-          transition: all 0.4s ease;
-          cursor: pointer;
-          position: relative;
-        }
-
-        .event-card:hover {
-          transform: translateY(-10px);
-          box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-        }
-
-        .event-card.featured::before {
-          content: '⭐ Featured';
-          position: absolute;
-          top: 1rem;
-          right: 1rem;
-          background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-          color: white;
-          padding: 0.4rem 1rem;
-          border-radius: 20px;
-          font-size: 0.85rem;
-          font-weight: 600;
-          z-index: 10;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .event-image {
-          width: 100%;
-          height: 250px;
-          object-fit: cover;
-          transition: transform 0.4s ease;
-        }
-
-        .event-card:hover .event-image {
-          transform: scale(1.05);
-        }
-
-        .event-content {
-          padding: 1.5rem;
-        }
-
-        .event-type {
-          display: inline-block;
-          padding: 0.4rem 1rem;
-          border-radius: 20px;
-          font-size: 0.85rem;
-          font-weight: 600;
-          margin-bottom: 1rem;
-        }
-
-        .event-type.crusade {
-          background: #e3f2fd;
-          color: #1976d2;
-        }
-
-        .event-type.conference {
-          background: #f3e5f5;
-          color: #7b1fa2;
-        }
-
-        .event-type.fellowship {
-          background: #e8f5e9;
-          color: #388e3c;
-        }
-
-        .event-type.special-service {
-          background: #fff3e0;
-          color: #f57c00;
-        }
-
-        .event-title {
-          font-size: 1.5rem;
-          font-weight: 700;
-          color: #333;
-          margin-bottom: 0.5rem;
-        }
-
-        .event-meta {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-          margin: 1rem 0;
-          color: #666;
-          font-size: 0.95rem;
-        }
-
-        .event-meta-item {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-
-        .event-meta-item i {
-          color: #667eea;
-          font-size: 1.1rem;
-        }
-
-        .event-description {
-          color: #666;
-          line-height: 1.6;
-          margin-bottom: 1.5rem;
-        }
-
-        .event-footer {
-          display: flex;
-          gap: 1rem;
-          padding-top: 1rem;
-          border-top: 1px solid #eee;
-        }
-
-        .btn-primary {
-          flex: 1;
-          padding: 0.8rem 1.5rem;
-          border: none;
-          border-radius: 30px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          text-decoration: none;
-          display: inline-block;
-          text-align: center;
-        }
-
-        .btn-primary:hover {
-          box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-          transform: translateY(-2px);
-          color: white;
-        }
-
-        .btn-secondary {
-          flex: 1;
-          padding: 0.8rem 1.5rem;
-          border: 2px solid #667eea;
-          border-radius: 30px;
-          background: transparent;
-          color: #667eea;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          text-decoration: none;
-          display: inline-block;
-          text-align: center;
-        }
-
-        .btn-secondary:hover {
-          background: #667eea;
-          color: white;
-        }
-
-        .no-events {
-          text-align: center;
-          padding: 4rem 2rem;
-          color: #666;
-        }
-
-        .no-events i {
-          font-size: 4rem;
-          color: #ddd;
-          margin-bottom: 1rem;
-        }
-
-        @media (max-width: 768px) {
-          .events-hero h1 {
-            font-size: 2.5rem;
-          }
-
-          .events-hero p {
-            font-size: 1.1rem;
-          }
-
-          .events-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-          }
-
-          .events-filters {
-            border-radius: 15px;
-            padding: 1rem;
-          }
-
-          .filter-btn {
-            padding: 0.6rem 1.2rem;
-            font-size: 0.9rem;
-          }
-
-          .events-container {
-            margin-top: -60px;
-            padding: 0 1rem 2rem;
-          }
-        }
-
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-
-        .floating {
-          animation: float 6s ease-in-out infinite;
-        }
-      `}</style>
-
-      <main className="main events-page">
-        {/* Hero Section */}
-        <div className="events-hero">
-          <motion.div 
-            className="events-hero-content"
+    <main className="bg-gray-50 min-h-screen">
+      {/* Hero Section */}
+      <div className="relative h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden bg-indigo-900">
+        <div className="absolute inset-0">
+          <img 
+            src="/assets/img/Atg-carousel-1.jpg" 
+            alt="Events Hero" 
+            className="w-full h-full object-cover opacity-30"
+            onError={(e) => {e.target.src = '/assets/img/hero-bg.jpg'}}
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/90 to-purple-900/90 mix-blend-multiply"></div>
+        </div>
+        
+        <div className="relative z-10 container mx-auto px-6 text-center text-white">
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1>Upcoming Events</h1>
-            <p>Where Divinity Meets Humanity - Join Us in Worship, Fellowship, and Service</p>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 drop-shadow-lg">Upcoming Events</h1>
+            <p className="text-xl md:text-2xl opacity-90 max-w-2xl mx-auto font-light leading-relaxed">
+              Where Divinity Meets Humanity - Join Us in Worship, Fellowship, and Service
+            </p>
           </motion.div>
         </div>
+      </div>
 
-        {/* Events Container */}
-        <div className="events-container">
-          {/* Filters */}
-          <motion.div 
-            className="events-filters"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            {filters.map((filter) => (
-              <button
-                key={filter.value}
-                className={`filter-btn ${selectedFilter === filter.value ? 'active' : ''}`}
-                onClick={() => setSelectedFilter(filter.value)}
-              >
-                {filter.label}
-              </button>
-            ))}
+      <Section className="-mt-20 relative z-20 pb-24">
+        {/* Filters */}
+        <motion.div 
+          className="bg-white rounded-full shadow-xl p-2 md:p-4 max-w-4xl mx-auto flex flex-wrap justify-center gap-2 md:gap-4 mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          {filters.map((filter) => (
+            <button
+              key={filter.value}
+              className={`px-6 py-2 rounded-full text-sm md:text-base font-medium transition-all duration-300 ${
+                selectedFilter === filter.value 
+                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md transform scale-105' 
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+              onClick={() => setSelectedFilter(filter.value)}
+            >
+              {filter.label}
+            </button>
+          ))}
+        </motion.div>
+
+        {/* Loading State */}
+        {loading && (
+          <div className="text-center py-20 text-gray-500">
+            <div className="animate-spin text-4xl mb-4">⏳</div>
+            <h3 className="text-xl font-semibold">Loading events...</h3>
+            <p>Please wait while we fetch the latest events</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !loading && (
+          <div className="text-center py-20 text-red-500">
+            <div className="text-4xl mb-4">⚠️</div>
+            <h3 className="text-xl font-semibold">Unable to load events</h3>
+            <p className="mb-4">{error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="px-6 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition"
+            >
+              Try Again
+            </button>
+          </div>
+        )}
+
+        {/* Events Grid */}
+        {!loading && !error && filteredEvents.length > 0 && (
+          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <AnimatePresence>
+              {filteredEvents.map((event) => {
+                const color = getEventTypeColor(event.type);
+                return (
+                  <motion.div
+                    layout
+                    key={event.id}
+                    className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group flex flex-col h-full"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="relative h-64 overflow-hidden">
+                      <img 
+                        src={getImageUrl(event.images?.[0])} 
+                        alt={event.title} 
+                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                        onError={(e) => {
+                          e.target.src = '/assets/img/hero-carousel/hero-carousel-1.jpg';
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                      
+                      {event.featured && (
+                        <div className="absolute top-4 right-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                          ⭐ Featured
+                        </div>
+                      )}
+                      
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-${color}-100 text-${color}-800 mb-2`}>
+                          {event.type}
+                        </span>
+                        <h3 className="text-xl font-bold text-white drop-shadow-md leading-tight">{event.title}</h3>
+                      </div>
+                    </div>
+
+                    <div className="p-6 flex-grow flex flex-col">
+                      <div className="space-y-3 mb-6 flex-grow">
+                        <div className="flex items-center text-gray-600 text-sm">
+                          <span className="w-5 mr-3 text-center">📅</span> 
+                          <span>{event.date}</span>
+                        </div>
+                        <div className="flex items-center text-gray-600 text-sm">
+                          <span className="w-5 mr-3 text-center">📍</span>
+                          <span>{event.venue}</span>
+                        </div>
+                        <div className="flex items-center text-gray-600 text-sm">
+                          <span className="w-5 mr-3 text-center">📞</span>
+                          <span>{event.contact}</span>
+                        </div>
+                        <p className="text-gray-600 text-sm leading-relaxed pt-2 border-t border-gray-100 mt-2">
+                          {event.description}
+                        </p>
+                      </div>
+
+                      <div className="flex gap-3 pt-4 border-t border-gray-100 mt-auto">
+                        <Link to={`/events/${event.id}`} className="flex-1 text-center py-2.5 rounded-xl font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition">
+                          Details
+                        </Link>
+                        <a href={`tel:${event.contact}`} className="flex-1 text-center py-2.5 rounded-xl font-semibold bg-gray-50 text-gray-700 hover:bg-gray-100 transition">
+                          Contact
+                        </a>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
           </motion.div>
+        )}
 
-          {/* Loading State */}
-          {loading && (
-            <div className="no-events">
-              <i className="bi bi-hourglass-split"></i>
-              <h3>Loading events...</h3>
-              <p>Please wait while we fetch the latest events</p>
-            </div>
-          )}
-
-          {/* Error State */}
-          {error && !loading && (
-            <div className="no-events">
-              <i className="bi bi-exclamation-circle"></i>
-              <h3>Unable to load events</h3>
-              <p>{error}</p>
-              <button 
-                onClick={() => window.location.reload()} 
-                className="btn-primary"
-                style={{ marginTop: '1rem', maxWidth: '200px' }}
-              >
-                Try Again
-              </button>
-            </div>
-          )}
-
-          {/* Events Grid */}
-          {!loading && !error && filteredEvents.length > 0 && (
-            <div className="events-grid">
-              {filteredEvents.map((event, index) => (
-                <motion.div
-                  key={event.id}
-                  className={`event-card ${event.featured ? 'featured' : ''}`}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  data-aos="fade-up"
-                  data-aos-delay={index * 100}
-                >
-                  <img 
-                    src={getImageUrl(event.images?.[0])} 
-                    alt={event.title} 
-                    className="event-image"
-                    onError={(e) => {
-                      e.target.src = '/assets/img/hero-carousel/hero-carousel-1.jpg';
-                    }}
-                  />
-                  <div className="event-content">
-                    <span className={`event-type ${event.type.toLowerCase().replace(' ', '-')}`}>
-                      {event.type}
-                    </span>
-                    <h3 className="event-title">{event.title}</h3>
-                    <div className="event-meta">
-                      <div className="event-meta-item">
-                        <i className="bi bi-calendar-event"></i>
-                        <span>{event.date}</span>
-                      </div>
-                      <div className="event-meta-item">
-                        <i className="bi bi-geo-alt"></i>
-                        <span>{event.venue}</span>
-                      </div>
-                      <div className="event-meta-item">
-                        <i className="bi bi-telephone"></i>
-                        <span>{event.contact}</span>
-                      </div>
-                    </div>
-                    <p className="event-description">
-                      {event.description}
-                    </p>
-                    <div className="event-footer">
-                      <Link to={`/events/${event.id}`} className="btn-primary">
-                        View Details
-                      </Link>
-                      <a href={`tel:${event.contact}`} className="btn-secondary">
-                        Contact
-                      </a>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
-
-          {/* No Events State */}
-          {!loading && !error && filteredEvents.length === 0 && (
-            <div className="no-events">
-              <i className="bi bi-calendar-x"></i>
-              <h3>No events found</h3>
-              <p>Try selecting a different filter</p>
-            </div>
-          )}
-        </div>
-      </main>
-    </>
+        {/* No Events State */}
+        {!loading && !error && filteredEvents.length === 0 && (
+          <div className="text-center py-20 text-gray-500 bg-white rounded-3xl shadow-sm max-w-2xl mx-auto">
+            <div className="text-6xl mb-4 opacity-50">📅</div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">No events found</h3>
+            <p>Try selecting a different filter category</p>
+          </div>
+        )}
+      </Section>
+    </main>
   );
 }
 

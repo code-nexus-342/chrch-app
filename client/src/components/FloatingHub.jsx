@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import AdminLogin from './AdminLogin';
@@ -13,8 +13,6 @@ function FloatingHub() {
   const [showAdminDashboard, setShowAdminDashboard] = useState(false);
   const [adminEmail, setAdminEmail] = useState('');
   const navigate = useNavigate();
-  const clickTimeoutRef = useRef(null);
-  const clickCountRef = useRef(0);
 
   const toggleHub = () => setIsOpen(!isOpen);
 
@@ -81,26 +79,7 @@ function FloatingHub() {
     setIsOpen(false);
   };
 
-  // Handle double-click on main button for admin access
-  const handleMainButtonClick = () => {
-    // First check if it's a double-click for admin
-    clickCountRef.current += 1;
 
-    if (clickCountRef.current === 1) {
-      // First click - set up timeout
-      clickTimeoutRef.current = setTimeout(() => {
-        clickCountRef.current = 0;
-        // If no second click, just toggle the menu
-        toggleHub();
-      }, 400); // 400ms window for double-click
-    } else if (clickCountRef.current === 2) {
-      // Second click - admin access!
-      clearTimeout(clickTimeoutRef.current);
-      clickCountRef.current = 0;
-      setShowAdminLogin(true);
-      setIsOpen(false); // Close menu if open
-    }
-  };
 
   const handleAdminLogin = (email) => {
     setAdminEmail(email);
@@ -312,13 +291,13 @@ function FloatingHub() {
         {/* Main floating button */}
         <motion.button
           className={`floating-hub-main-btn ${isOpen ? 'open' : ''}`}
-          onClick={handleMainButtonClick}
+          onClick={toggleHub}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           animate={{
             rotate: isOpen ? 45 : 0,
           }}
-          title="Click to open menu, Double-click for admin access"
+          title="Click to open menu"
           aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
           aria-expanded={isOpen}
         >

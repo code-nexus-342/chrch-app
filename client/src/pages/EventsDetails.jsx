@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import apiService from '../services/api';
 
 function EventsDetails() {
@@ -61,12 +61,10 @@ function EventsDetails() {
 
   if (loading) {
     return (
-      <main className="main">
-        <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ textAlign: 'center' }}>
-            <i className="bi bi-hourglass-split" style={{ fontSize: '3rem', color: '#667eea' }}></i>
-            <h3>Loading event details...</h3>
-          </div>
+      <main className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin text-4xl mb-4 text-indigo-600">⏳</div>
+          <h3 className="text-xl font-semibold text-gray-700">Loading event details...</h3>
         </div>
       </main>
     );
@@ -74,428 +72,150 @@ function EventsDetails() {
 
   if (error || !event) {
     return (
-      <main className="main">
-        <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ textAlign: 'center', padding: '2rem' }}>
-            <i className="bi bi-exclamation-circle" style={{ fontSize: '3rem', color: '#f5576c' }}></i>
-            <h3>Event not found</h3>
-            <p>{error || 'The event you are looking for does not exist.'}</p>
-            <Link to="/events" className="btn-primary" style={{ marginTop: '1rem', display: 'inline-block' }}>
-              Back to Events
-            </Link>
-          </div>
+      <main className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center p-8 bg-white rounded-3xl shadow-xl max-w-md mx-4">
+          <div className="text-5xl mb-4 text-rose-500">⚠️</div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">Event not found</h3>
+          <p className="text-gray-600 mb-6">{error || 'The event you are looking for does not exist.'}</p>
+          <Link to="/events" className="inline-block px-6 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition font-medium">
+            Back to Events
+          </Link>
         </div>
       </main>
     );
   }
 
   return (
-    <>
-      <style>{`
-        .event-details-page {
-          min-height: 100vh;
-          background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-          padding: 2rem 0;
-        }
-
-        .event-details-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 2rem;
-        }
-
-        .back-button {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.7rem 1.5rem;
-          background: white;
-          border: none;
-          border-radius: 30px;
-          color: #667eea;
-          font-weight: 600;
-          cursor: pointer;
-          text-decoration: none;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-          transition: all 0.3s ease;
-          margin-bottom: 2rem;
-        }
-
-        .back-button:hover {
-          transform: translateX(-5px);
-          box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-          color: #667eea;
-        }
-
-        .event-details-card {
-          background: white;
-          border-radius: 20px;
-          overflow: hidden;
-          box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-        }
-
-        .event-details-header {
-          position: relative;
-          height: 500px;
-          overflow: hidden;
-        }
-
-        .event-details-image {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-
-        .image-navigation {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          padding: 0 1rem;
-        }
-
-        .nav-arrow {
-          background: rgba(255,255,255,0.9);
-          border: none;
-          border-radius: 50%;
-          width: 50px;
-          height: 50px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          font-size: 1.5rem;
-          color: #667eea;
-        }
-
-        .nav-arrow:hover {
-          background: white;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-          transform: scale(1.1);
-        }
-
-        .image-indicators {
-          position: absolute;
-          bottom: 1rem;
-          left: 50%;
-          transform: translateX(-50%);
-          display: flex;
-          gap: 0.5rem;
-        }
-
-        .indicator {
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-          background: rgba(255,255,255,0.5);
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .indicator.active {
-          background: white;
-          width: 30px;
-          border-radius: 5px;
-        }
-
-        .event-details-content {
-          padding: 2.5rem;
-        }
-
-        .event-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.5rem 1.2rem;
-          border-radius: 30px;
-          font-weight: 600;
-          font-size: 0.9rem;
-          margin-bottom: 1rem;
-        }
-
-        .event-badge.featured {
-          background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-          color: white;
-        }
-
-        .event-details-title {
-          font-size: 2.5rem;
-          font-weight: 700;
-          color: #333;
-          margin-bottom: 1.5rem;
-        }
-
-        .event-meta-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: 1.5rem;
-          margin: 2rem 0;
-          padding: 2rem;
-          background: #f8f9fa;
-          border-radius: 15px;
-        }
-
-        .meta-item {
-          display: flex;
-          align-items: flex-start;
-          gap: 1rem;
-        }
-
-        .meta-icon {
-          width: 40px;
-          height: 40px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border-radius: 10px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          font-size: 1.2rem;
-          flex-shrink: 0;
-        }
-
-        .meta-content h4 {
-          font-size: 0.85rem;
-          color: #888;
-          margin-bottom: 0.3rem;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-
-        .meta-content p {
-          font-size: 1.1rem;
-          color: #333;
-          font-weight: 600;
-          margin: 0;
-        }
-
-        .event-description-section {
-          margin: 2rem 0;
-        }
-
-        .event-description-section h3 {
-          font-size: 1.5rem;
-          color: #333;
-          margin-bottom: 1rem;
-        }
-
-        .event-description {
-          font-size: 1.1rem;
-          line-height: 1.8;
-          color: #666;
-        }
-
-        .event-actions {
-          display: flex;
-          gap: 1rem;
-          margin-top: 2rem;
-          flex-wrap: wrap;
-        }
-
-        .btn-primary {
-          flex: 1;
-          min-width: 200px;
-          padding: 1rem 2rem;
-          border: none;
-          border-radius: 30px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          text-decoration: none;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          font-size: 1rem;
-        }
-
-        .btn-primary:hover {
-          box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-          transform: translateY(-2px);
-          color: white;
-        }
-
-        .btn-secondary {
-          flex: 1;
-          min-width: 200px;
-          padding: 1rem 2rem;
-          border: 2px solid #667eea;
-          border-radius: 30px;
-          background: transparent;
-          color: #667eea;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          text-decoration: none;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          font-size: 1rem;
-        }
-
-        .btn-secondary:hover {
-          background: #667eea;
-          color: white;
-        }
-
-        @media (max-width: 768px) {
-          .event-details-header {
-            height: 300px;
-          }
-
-          .event-details-content {
-            padding: 1.5rem;
-          }
-
-          .event-details-title {
-            font-size: 1.8rem;
-          }
-
-          .event-meta-grid {
-            grid-template-columns: 1fr;
-            padding: 1.5rem;
-          }
-
-          .event-actions {
-            flex-direction: column;
-          }
-
-          .btn-primary, .btn-secondary {
-            width: 100%;
-          }
-        }
-      `}</style>
-
-      <main className="main event-details-page">
-        <div className="event-details-container">
-          <Link to="/events" className="back-button">
-            <i className="bi bi-arrow-left"></i>
-            Back to Events
-          </Link>
-
-          <motion.div 
-            className="event-details-card"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            {/* Event Image Gallery */}
-            <div className="event-details-header">
-              <img 
-                src={getImageUrl(event.images?.[currentImageIndex])} 
-                alt={event.title}
-                className="event-details-image"
-                onError={(e) => {
-                  e.target.src = '/assets/img/hero-carousel/hero-carousel-1.jpg';
-                }}
-              />
-              
-              {event.images?.length > 1 && (
-                <>
-                  <div className="image-navigation">
-                    <button className="nav-arrow" onClick={prevImage}>
-                      <i className="bi bi-chevron-left"></i>
-                    </button>
-                    <button className="nav-arrow" onClick={nextImage}>
-                      <i className="bi bi-chevron-right"></i>
-                    </button>
-                  </div>
-                  
-                  <div className="image-indicators">
-                    {event.images.map((_, index) => (
-                      <div 
-                        key={index}
-                        className={`indicator ${index === currentImageIndex ? 'active' : ''}`}
-                        onClick={() => setCurrentImageIndex(index)}
-                      />
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* Event Content */}
-            <div className="event-details-content">
-              {event.featured && (
-                <div className="event-badge featured">
-                  <i className="bi bi-star-fill"></i>
-                  Featured Event
+    <main className="min-h-screen bg-gray-50 py-12 px-4 md:px-8">
+      <div className="max-w-6xl mx-auto">
+        <Link to="/events" className="inline-flex items-center gap-2 px-6 py-2 bg-white text-indigo-600 rounded-full font-semibold shadow-sm hover:shadow-md transition-all mb-8 group">
+          <span className="group-hover:-translate-x-1 transition-transform">←</span>
+          Back to Events
+        </Link>
+        
+        <motion.div 
+          className="bg-white rounded-3xl overflow-hidden shadow-2xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          {/* Event Image Gallery */}
+          <div className="relative h-[400px] md:h-[500px] bg-gray-900 group">
+            <AnimatePresence mode='wait'>
+                <motion.img 
+                  key={currentImageIndex}
+                  src={getImageUrl(event.images?.[currentImageIndex])} 
+                  alt={event.title}
+                  className="w-full h-full object-cover opacity-90"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  onError={(e) => {
+                    e.target.src = '/assets/img/hero-carousel/hero-carousel-1.jpg';
+                  }}
+                />
+            </AnimatePresence>
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent"></div>
+            
+            {event.images?.length > 1 && (
+              <>
+                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button className="w-12 h-12 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white transition-all shadow-lg" onClick={prevImage}>
+                    ←
+                  </button>
+                  <button className="w-12 h-12 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white transition-all shadow-lg" onClick={nextImage}>
+                    →
+                  </button>
                 </div>
-              )}
-
-              <h1 className="event-details-title">{event.title}</h1>
-
-              {/* Event Meta Information */}
-              <div className="event-meta-grid">
-                <div className="meta-item">
-                  <div className="meta-icon">
-                    <i className="bi bi-calendar-event"></i>
-                  </div>
-                  <div className="meta-content">
-                    <h4>Date</h4>
-                    <p>{event.date}</p>
-                  </div>
+                
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+                  {event.images.map((_, index) => (
+                    <button 
+                      key={index}
+                      className={`h-2 rounded-full transition-all duration-300 shadow-sm ${index === currentImageIndex ? 'w-8 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'}`}
+                      onClick={() => setCurrentImageIndex(index)}
+                    />
+                  ))}
                 </div>
+              </>
+            )}
+            
+            {event.featured && (
+               <div className="absolute top-6 right-6 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-lg flex items-center gap-2">
+                 <span>⭐</span> Featured
+               </div>
+            )}
+          </div>
 
-                <div className="meta-item">
-                  <div className="meta-icon">
-                    <i className="bi bi-geo-alt"></i>
-                  </div>
-                  <div className="meta-content">
-                    <h4>Venue</h4>
-                    <p>{event.venue}</p>
-                  </div>
+          <div className="grid md:grid-cols-3 gap-0">
+             {/* Content Side */}
+             <div className="md:col-span-2 p-8 md:p-12">
+               <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">{event.title}</h1>
+               
+               <div className="prose prose-lg text-gray-600 mb-10">
+                 <h3 className="text-xl font-bold text-gray-900 mb-4 block">About This Event</h3>
+                 <p className="leading-relaxed whitespace-pre-line">{event.description}</p>
+               </div>
+
+               <div className="bg-indigo-50 rounded-2xl p-6 md:p-8 border border-indigo-100">
+                 <h3 className="font-bold text-indigo-900 mb-6 text-lg">Event Details</h3>
+                 <div className="grid sm:grid-cols-2 gap-6">
+                    <div className="flex gap-4 items-start">
+                       <span className="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-xl shadow-sm text-indigo-600">📅</span>
+                       <div>
+                         <p className="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">Date</p>
+                         <p className="font-semibold text-gray-900">{event.date}</p>
+                       </div>
+                    </div>
+                    <div className="flex gap-4 items-start">
+                       <span className="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-xl shadow-sm text-indigo-600">📍</span>
+                       <div>
+                         <p className="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">Venue</p>
+                         <p className="font-semibold text-gray-900">{event.venue}</p>
+                       </div>
+                    </div>
+                     <div className="flex gap-4 items-start">
+                       <span className="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-xl shadow-sm text-indigo-600">👤</span>
+                       <div>
+                         <p className="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">Host</p>
+                         <p className="font-semibold text-gray-900">{event.host}</p>
+                       </div>
+                    </div>
+                    <div className="flex gap-4 items-start">
+                       <span className="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-xl shadow-sm text-indigo-600">🏷️</span>
+                       <div>
+                         <p className="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">Type</p>
+                         <p className="font-semibold text-gray-900 capitalize">{event.type}</p>
+                       </div>
+                    </div>
+                 </div>
+               </div>
+             </div>
+             
+             {/* Sidebar Side (on desktop) / Bottom actions (on mobile) */}
+             <div className="bg-gray-50 p-8 md:p-12 border-t md:border-t-0 md:border-l border-gray-100 flex flex-col justify-center">
+                <div className="text-center mb-8">
+                  <span className="inline-block w-16 h-16 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-3xl mb-4 mx-auto">
+                    👋
+                  </span>
+                  <h3 className="text-2xl font-bold text-gray-900">Interested?</h3>
+                  <p className="text-gray-600 mt-2">Get in touch to learn more or RSVP.</p>
                 </div>
-
-                <div className="meta-item">
-                  <div className="meta-icon">
-                    <i className="bi bi-person"></i>
-                  </div>
-                  <div className="meta-content">
-                    <h4>Host</h4>
-                    <p>{event.host}</p>
-                  </div>
+                
+                <div className="space-y-4">
+                  <a href={`tel:${event.contact}`} className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-indigo-200/50 transition-all transform hover:-translate-y-1">
+                    <span>📞</span> Call Us
+                  </a>
+                  <a href={`sms:${event.contact}`} className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-white hover:bg-gray-50 text-indigo-600 border-2 border-indigo-600/10 rounded-xl font-bold text-lg transition-all">
+                    <span>💬</span> Send SMS
+                  </a>
                 </div>
-
-                <div className="meta-item">
-                  <div className="meta-icon">
-                    <i className="bi bi-tag"></i>
-                  </div>
-                  <div className="meta-content">
-                    <h4>Event Type</h4>
-                    <p>{event.type}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Event Description */}
-              <div className="event-description-section">
-                <h3>About This Event</h3>
-                <p className="event-description">{event.description}</p>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="event-actions">
-                <a href={`tel:${event.contact}`} className="btn-primary">
-                  <i className="bi bi-telephone"></i>
-                  Call {event.contact}
-                </a>
-                <a href={`sms:${event.contact}`} className="btn-secondary">
-                  <i className="bi bi-chat-dots"></i>
-                  Send SMS
-                </a>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </main>
-    </>
+             </div>
+          </div>
+        </motion.div>
+      </div>
+    </main>
   );
 }
 
