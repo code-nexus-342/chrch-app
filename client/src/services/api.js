@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 
-  (window.location.hostname.includes('localhost') 
-    ? 'http://localhost:5000' 
-    : 'https://atgchapelmks-0dm8.onrender.com');
+const configuredApiUrl = import.meta.env.VITE_API_URL?.trim().replace(/\/$/, '');
+const isLocalDevelopment = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const API_BASE_URL = configuredApiUrl || (isLocalDevelopment ? 'http://localhost:5000' : '');
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -40,6 +39,32 @@ const apiService = {
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Failed to send message');
+    }
+  },
+
+  // Paystack donations
+  initializeDonation: async (data) => {
+    try {
+      const response = await apiClient.post('/api/donations/initialize', data);
+      return response.data;
+    } catch (error) {
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      if (error.request) {
+        const target = API_BASE_URL || 'the current site';
+        throw new Error(`Donation service is unavailable at ${target}. Set VITE_API_URL to the public URL of your running backend and rebuild the client.`);
+      }
+      throw new Error(error.message || 'Unable to start donation checkout');
+    }
+  },
+
+  verifyDonation: async (reference) => {
+    try {
+      const response = await apiClient.get(`/api/donations/verify/${encodeURIComponent(reference)}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Unable to verify donation');
     }
   },
 

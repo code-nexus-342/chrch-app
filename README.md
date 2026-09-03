@@ -45,11 +45,11 @@ cd chrch-app
 
 # Install server dependencies
 cd server
-npm install
+pnpm install
 
 # Install client dependencies
 cd ../client
-npm install
+pnpm install
 ```
 
 #### 2. Configure Environment
@@ -89,13 +89,13 @@ VITE_API_URL=http://localhost:5000
 **Terminal 1 - Backend:**
 ```bash
 cd server
-npm run dev     # Uses nodemon for auto-restart
+pnpm run dev    # Uses nodemon for auto-restart
 ```
 
 **Terminal 2 - Frontend:**
 ```bash
 cd client
-npm run dev     # Vite dev server with HMR
+pnpm run dev    # Vite dev server with HMR
 ```
 
 Open http://localhost:5173 (or the port Vite displays)
@@ -244,17 +244,17 @@ The application is configured for deployment on Render with separate services:
 
 ### Server Scripts
 ```bash
-npm start              # Start production server
-npm run dev            # Start development server (nodemon)
-npm run setup          # Setup admin user
+pnpm start             # Start production server
+pnpm run dev           # Start development server (nodemon)
+pnpm run setup         # Setup admin user
 ```
 
 ### Client Scripts
 ```bash
-npm run dev            # Start Vite dev server
-npm run build          # Build for production
-npm run preview        # Preview production build
-npm run lint           # Run ESLint
+pnpm run dev           # Start Vite dev server
+pnpm run build         # Build for production
+pnpm run preview       # Preview production build
+pnpm run lint          # Run ESLint
 ```
 
 ---
@@ -303,12 +303,12 @@ Main tables:
 
 Database schema is automatically initialized on server startup:
 ```bash
-npm start  # Auto-runs schema initialization
+pnpm start # Auto-runs schema initialization
 ```
 
 Manual setup:
 ```bash
-npm run setup  # Initialize and create admin
+pnpm run setup # Initialize and create admin
 ```
 
 ---
@@ -392,7 +392,7 @@ Error: Invalid login
 ```
 Module not found
 ```
-**Solution:** Delete `node_modules` and `package-lock.json`, run `npm install`
+**Solution:** Delete `node_modules` and `pnpm-lock.yaml`, run `pnpm install`
 
 ---
 

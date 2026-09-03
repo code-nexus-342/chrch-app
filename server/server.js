@@ -17,13 +17,35 @@ const prayerRoutes = require('./routes/prayer');
 const contactRoutes = require('./routes/contact');
 const eventsRoutes = require('./routes/events');
 const uploadRoutes = require('./routes/upload');
+const donationsRoutes = require('./routes/donations');
 
 const app = express();
 app.use(express.json());
 
-// CORS configuration for production
+// CORS configuration for production and local Vite development.
+// Browsers never include a trailing slash in the Origin header, so normalize
+// configured URLs before comparing them.
+const normalizeOrigin = (origin) => origin?.trim().replace(/\/$/, '');
+const configuredClientOrigin = normalizeOrigin(process.env.CLIENT_URL);
+const allowedLocalOrigins = new Set([
+  'http://localhost:5173',
+  'http://localhost:4173',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:4173'
+]);
+
 const corsOptions = {
-  origin: process.env.CLIENT_URL || '*',
+  origin: (origin, callback) => {
+    // Allow requests without an Origin header (health checks, server-to-server requests).
+    if (!origin) return callback(null, true);
+
+    const normalizedOrigin = normalizeOrigin(origin);
+    if (normalizedOrigin === configuredClientOrigin || allowedLocalOrigins.has(normalizedOrigin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error('Origin is not allowed by CORS'));
+  },
   credentials: true,
   optionsSuccessStatus: 200
 };
@@ -39,6 +61,7 @@ app.use('/api/prayer-request', prayerRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/donations', donationsRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

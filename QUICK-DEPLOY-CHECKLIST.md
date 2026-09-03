@@ -7,8 +7,8 @@
 - [ ] New + → Web Service
 - [ ] Connect GitHub repo
 - [ ] Root Directory: `server`
-- [ ] Build Command: `npm install`
-- [ ] Start Command: `npm start`
+- [ ] Build Command: `pnpm install`
+- [ ] Start Command: `pnpm start`
 
 ### 2. Environment Variables
 ```bash
@@ -22,6 +22,8 @@ SMTP_USER=your-email@gmail.com
 SMTP_PASS=your-app-password
 RECEIVING_EMAIL=admin@atgchapel.org
 ADMIN_EMAIL=admin@atgchapel.org
+PAYSTACK_SECRET_KEY=sk_test_your_secret_key_here
+PAYSTACK_CURRENCY=KES
 ```
 
 ### 3. Verify
@@ -36,7 +38,7 @@ ADMIN_EMAIL=admin@atgchapel.org
 ### 1. Update Environment
 - [ ] Create `client/.env.production`:
 ```bash
-VITE_API_URL=https://your-backend.onrender.com
+VITE_API_URL=https://your-running-backend.onrender.com
 ```
 
 ### 2. Deploy to Netlify
@@ -44,7 +46,7 @@ VITE_API_URL=https://your-backend.onrender.com
 - [ ] New site from Git
 - [ ] Connect GitHub repo
 - [ ] Base directory: `client`
-- [ ] Build command: `npm run build`
+- [ ] Build command: `pnpm run build`
 - [ ] Publish directory: `dist`
 - [ ] Add environment variable: `VITE_API_URL`
 

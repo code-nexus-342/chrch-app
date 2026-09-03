@@ -27,8 +27,8 @@ This guide will walk you through deploying the ATG Chapel application on Render 
    - **Branch**: `main`
    - **Root Directory**: `server`
    - **Runtime**: `Node`
-   - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
+   - **Build Command**: `pnpm install`
+   - **Start Command**: `pnpm start`
    - **Plan**: Free
 
 ### Step 2: Configure Environment Variables
@@ -44,6 +44,10 @@ DATABASE_URL=postgresql://neondb_owner:npg_JFB6SNn8uezj@ep-dawn-snow-adrw7o21-po
 
 # CORS - Add your frontend URL after deploying client
 CLIENT_URL=https://your-frontend-app.netlify.app
+
+# Paystack
+PAYSTACK_SECRET_KEY=sk_test_your_secret_key_here
+PAYSTACK_CURRENCY=KES
 
 # SMTP Configuration (Gmail)
 SMTP_HOST=smtp.gmail.com
@@ -79,15 +83,17 @@ You have two options for deploying the frontend:
 
 #### Step 1: Prepare the Client
 
-1. Update `.env.production` with your backend URL:
+1. Update `.env.production` with the exact public URL of your running backend:
 ```bash
-VITE_API_URL=https://atg-chapel-api.onrender.com
+VITE_API_URL=https://your-running-backend.onrender.com
 ```
+
+Verify it first by opening `https://your-running-backend.onrender.com/api/health` and confirming the ATG Chapel API JSON response. Do not use a placeholder or an old Render service URL.
 
 2. Test the build locally:
 ```bash
 cd client
-npm run build
+pnpm run build
 ```
 
 #### Step 2: Deploy to Netlify
@@ -98,14 +104,14 @@ npm run build
 3. Connect your GitHub repository
 4. Configure:
    - **Base directory**: `client`
-   - **Build command**: `npm run build`
+   - **Build command**: `pnpm run build`
    - **Publish directory**: `client/dist`
-   - **Environment variables**: Add `VITE_API_URL` with your backend URL
+   - **Environment variables**: Add `VITE_API_URL` with the exact backend URL verified above
 
 **Via Netlify CLI:**
 ```bash
 cd client
-npm install -g netlify-cli
+pnpm add -g netlify-cli
 netlify login
 netlify init
 netlify deploy --prod
@@ -121,7 +127,7 @@ netlify deploy --prod
    - **Name**: `atg-chapel-client`
    - **Branch**: `main`
    - **Root Directory**: `client`
-   - **Build Command**: `npm install && npm run build`
+   - **Build Command**: `pnpm install && pnpm run build`
    - **Publish Directory**: `dist`
 
 #### Step 2: Add Environment Variable
@@ -174,7 +180,7 @@ https://your-backend.onrender.com/api/events
 3. If you need to re-initialize:
 ```bash
 # SSH into Render or run locally
-npm run setup
+pnpm run setup
 ```
 
 ---
@@ -282,8 +288,8 @@ Error: Invalid login: 535-5.7.8 Username and Password not accepted
 ```bash
 # Verify all dependencies install
 cd client
-npm ci
-npm run build
+pnpm install --frozen-lockfile
+pnpm run build
 ```
 
 ### Free Tier Limitations
@@ -451,11 +457,11 @@ client/
 
 ```bash
 # Local Development
-npm run dev              # Start development server
+pnpm run dev            # Start development server
 
 # Build
-npm run build           # Build for production
-npm start               # Start production server
+pnpm run build          # Build for production
+pnpm start              # Start production server
 
 # Deploy
 git push origin main    # Trigger auto-deploy

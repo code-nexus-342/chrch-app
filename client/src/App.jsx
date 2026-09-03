@@ -14,6 +14,7 @@ import EventsDetails from './pages/EventsDetails';
 import Founders from './pages/Founders';
 import Services from './pages/Services';
 import Contact from './pages/Contact';
+import DonationCallback from './pages/DonationCallback';
 import './App.css';
 import './styles/custom-pages.css';
 
@@ -35,6 +36,7 @@ function App() {
           <Route path="/founders" element={<Founders />} />
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/donation/callback" element={<DonationCallback />} />
         </Routes>
         <Footer />
         {/* FloatingHub kept as secondary nav or removed if redundant. Keeping for now as requested by user's initial codebase style but Navbar is primary. */}

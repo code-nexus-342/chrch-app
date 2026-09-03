@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Button from '../ui/Button';
+import DonateModal from '../DonateModal';
 
 const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
+    const [donateOpen, setDonateOpen] = useState(false);
     const location = useLocation();
 
     useEffect(() => {
@@ -77,8 +79,9 @@ const Navbar = () => {
 
                     {/* Desktop Actions */}
                     <div className="flex items-center gap-4">
-                        <Button 
-                            href="/#contact"
+                        <Button
+                            type="button"
+                            onClick={() => setDonateOpen(true)}
                             variant="gradient" 
                             size="sm" 
                             className="rounded-full px-6 shadow-glow-sm hover:shadow-glow-md"
@@ -114,8 +117,10 @@ const Navbar = () => {
                         </Link>
                     ))}
                     {/* Mobile Donate Icon */}
-                    <Link
-                        to="/#contact"
+                    <button
+                        type="button"
+                        onClick={() => setDonateOpen(true)}
+                        aria-label="Donate"
                         className="flex flex-col items-center justify-center text-secondary hover:text-secondary-dark transition-all duration-300 hover:-translate-y-1"
                     >
                         <span className="p-2 bg-secondary/10 rounded-full shadow-glow-sm">
@@ -123,9 +128,10 @@ const Navbar = () => {
                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                             </svg>
                         </span>
-                    </Link>
+                    </button>
                 </div>
             </nav>
+            <DonateModal open={donateOpen} onClose={() => setDonateOpen(false)} />
         </React.Fragment>
     );
 };
